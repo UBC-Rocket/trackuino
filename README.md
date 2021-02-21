@@ -1,3 +1,15 @@
+This is a fork of the trackuino library with changes made to suit the Aerostat subteam. Most importantly:
+* [Not started] The Venus GPS used in the original trackuino has been replaced with an Adafruit Ultimate GPS. This means the removal of code related to the Venus and the addition of code to use the Adafruit library.
+* [Not started] Addition of code to support the wind sensor and barometer
+* [Not started] Removal of code for unusued sensors in the trackuino library
+* [Not started] Modification of APRS packet structure
+* Potentially more...
+
+
+
+Original Description
+=======
+
 ![Banner](https://github.com/trackuino/trackuino/wiki/img/trackuino-banner-narrow.png)
 
 This is the firmware for Trackuino, an open-source APRS tracker based on the Arduino platform. It was designed primarily to track high altitude balloons, so it has other handy features like reading temperature sensors and a buzzer for acoustic location.
