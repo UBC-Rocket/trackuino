@@ -52,13 +52,18 @@ void aprs_send()
   };
 
   ax25_send_header(addresses, sizeof(addresses)/sizeof(s_address));
+  ax25_send_string(altMeasurement);   // contains altitude values
+  ax25_send_byte('/');                // printing with timestamp
+  ax25_send_string(gpsString);        // contains GPS time, longitude, long dir, latitude, lat dir
+  ax25_send_byte('O');                // balloon type identifier is 'O'
+  ax25_send_byte('a');
+  ax25_send_byte('v');
+  ax25_send_byte('\n');
+
   ax25_send_byte('/');                // Report w/ timestamp, no APRS messaging. $ = NMEA raw data
   // ax25_send_string("021709z");     // 021709z = 2nd day of the month, 17:09 zulu (UTC/GMT)
-  ax25_send_string(gps_time);         // 170915 = 17h:09m:15s zulu (not allowed in Status Reports)
   ax25_send_byte('h');
-  ax25_send_string(gps_aprs_lat);     // Lat: 38deg and 22.20 min (.20 are NOT seconds, but 1/100th of minutes)
   ax25_send_byte('/');                // Symbol table
-  ax25_send_string(gps_aprs_lon);     // Lon: 000deg and 25.80 min
   ax25_send_byte('O');                // Symbol: O=balloon, -=QTH
   ax25_send_string(temp);             // Course (degrees)
   ax25_send_byte('/');                // and
@@ -74,6 +79,7 @@ void aprs_send()
   ax25_send_string(temp);
   ax25_send_byte(' ');
   ax25_send_string(APRS_COMMENT);     // Comment
+    
   ax25_send_footer();
 
   ax25_flush_frame();                 // Tell the modem to go
