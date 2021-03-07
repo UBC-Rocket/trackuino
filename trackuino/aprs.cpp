@@ -60,22 +60,17 @@ void aprs_send()
   ax25_send_byte('/');                // Symbol table
   ax25_send_string(gps_aprs_lon);     // Lon: 000deg and 25.80 min
   ax25_send_byte('O');                // Symbol: O=balloon, -=QTH
-  snprintf(temp, 4, "%03d", (int)(gps_course + 0.5)); 
   ax25_send_string(temp);             // Course (degrees)
   ax25_send_byte('/');                // and
-  snprintf(temp, 4, "%03d", (int)(gps_speed + 0.5));
+  ax25_send_byte(',');                // Symbol table to seperate different strings while printed
   ax25_send_string(temp);             // speed (knots)
   ax25_send_string("/A=");            // Altitude (feet). Goes anywhere in the comment area
-  snprintf(temp, 7, "%06ld", (long)(meters_to_feet(gps_altitude) + 0.5));
   ax25_send_string(temp);
   ax25_send_string("/Ti=");
-  snprintf(temp, 6, "%d", sensors_int_lm60());
   ax25_send_string(temp);
   ax25_send_string("/Te=");
-  snprintf(temp, 6, "%d", sensors_ext_lm60());
   ax25_send_string(temp);
   ax25_send_string("/V=");
-  snprintf(temp, 6, "%d", sensors_vin());
   ax25_send_string(temp);
   ax25_send_byte(' ');
   ax25_send_string(APRS_COMMENT);     // Comment
