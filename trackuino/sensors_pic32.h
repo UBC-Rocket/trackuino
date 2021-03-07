@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
+/*
 #ifdef PIC32MX
 #ifndef __SENSORS_PIC32_H__
 #define __SENSORS_PIC32_H__
@@ -28,3 +28,4 @@ int sensors_vin();
 
 #endif // ifndef __SENSORS_PIC32_H__
 #endif // ifdef PIC32MX
+*/
