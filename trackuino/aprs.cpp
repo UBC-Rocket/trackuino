@@ -52,6 +52,7 @@ void aprs_send()
   };
 
   ax25_send_header(addresses, sizeof(addresses)/sizeof(s_address));
+  ax25_send_byte(',');                // Symbol table to seperate different strings while printed
   ax25_send_string(altMeasurement);   // contains altitude values
   ax25_send_byte('/');                // printing with timestamp
   ax25_send_string(gpsString);        // contains GPS time, longitude, long dir, latitude, lat dir
@@ -60,24 +61,6 @@ void aprs_send()
   ax25_send_byte('v');
   ax25_send_byte('\n');
 
-  ax25_send_byte('/');                // Report w/ timestamp, no APRS messaging. $ = NMEA raw data
-  // ax25_send_string("021709z");     // 021709z = 2nd day of the month, 17:09 zulu (UTC/GMT)
-  ax25_send_byte('h');
-  ax25_send_byte('/');                // Symbol table
-  ax25_send_byte('O');                // Symbol: O=balloon, -=QTH
-  ax25_send_string(temp);             // Course (degrees)
-  ax25_send_byte('/');                // and
-  ax25_send_byte(',');                // Symbol table to seperate different strings while printed
-  ax25_send_string(temp);             // speed (knots)
-  ax25_send_string("/A=");            // Altitude (feet). Goes anywhere in the comment area
-  ax25_send_string(temp);
-  ax25_send_string("/Ti=");
-  ax25_send_string(temp);
-  ax25_send_string("/Te=");
-  ax25_send_string(temp);
-  ax25_send_string("/V=");
-  ax25_send_string(temp);
-  ax25_send_byte(' ');
   ax25_send_string(APRS_COMMENT);     // Comment
     
   ax25_send_footer();
