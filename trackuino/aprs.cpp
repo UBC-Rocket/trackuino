@@ -17,10 +17,13 @@
 
 #include "config.h"
 #include "ax25.h"
-#include "gps.h"
 #include "aprs.h"
-#include "sensors_avr.h"
-#include "sensors_pic32.h"
+#include "adaUlGps.cpp"
+#include "adaUlGps.h"
+#include "barometer.cpp"
+#include "barometer.h"
+#include "windSensor.cpp"
+#include "windSensor.h"
 #include <stdio.h>
 #include <stdlib.h>
 #if (ARDUINO + 1) >= 100
