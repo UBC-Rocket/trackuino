@@ -196,8 +196,8 @@
 // Connect the GPS RX (receive) pin to digital ADAULGPS_RX_PIN
 #define ADAULGPS_RX_PIN           7
 
-// Not quite sure what this is for but will include it just in case
-#define GPSECHO                   true
+// Not needed
+// #define GPSECHO                   true
 
 
 // --------------------------------------------------------------------------
@@ -214,7 +214,7 @@
 #define BAROMETER_PIN A5
 
 //need to add value and comment
-#define INPUT
+// #define INPUT
 
 // Constants for Honeywell Barometer transfer function. DO NOT CHANGE!
 #define BAROMETER_V_SUPPLY          3.3
