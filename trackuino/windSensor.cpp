@@ -1,5 +1,5 @@
 #include "windSensor.h"
-#include "aerostat_config.h"
+#include "config.h"
 #include "aerostat_utils.h"
 #include <math.h>
 

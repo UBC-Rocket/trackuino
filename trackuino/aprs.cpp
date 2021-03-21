@@ -18,12 +18,6 @@
 #include "config.h"
 #include "ax25.h"
 #include "aprs.h"
-#include "adaUlGps.cpp"
-#include "adaUlGps.h"
-#include "barometer.cpp"
-#include "barometer.h"
-#include "windSensor.cpp"
-#include "windSensor.h"
 #include <stdio.h>
 #include <stdlib.h>
 #if (ARDUINO + 1) >= 100
@@ -40,7 +34,7 @@ float meters_to_feet(float m)
 }
 
 // Exported functions
-void aprs_send()
+void aprs_send(char gpsString[], char altitude[], char wind_velocity[])
 {
   char temp[12];                   // Temperature (int/ext)
   const struct s_address addresses[] = { 
@@ -56,17 +50,27 @@ void aprs_send()
 
   ax25_send_header(addresses, sizeof(addresses)/sizeof(s_address));
   ax25_send_byte(',');                // Symbol table to seperate different strings while printed
-  ax25_send_string(altMeasurement);   // contains altitude values
-  ax25_send_byte('/');                // printing with timestamp
   ax25_send_string(gpsString);        // contains GPS time, longitude, long dir, latitude, lat dir
   ax25_send_byte('O');                // balloon type identifier is 'O'
   ax25_send_byte('a');
+  
+  ax25_send_string(altitude);
   ax25_send_byte('v');
-  ax25_send_byte('\n');
+  ax25_send_string(wind_velocity);
+  //ax25_send_byte('\n');
 
   ax25_send_string(APRS_COMMENT);     // Comment
     
   ax25_send_footer();
-
+  
   ax25_flush_frame();                 // Tell the modem to go
+
+    
+  Serial.print(gpsString);
+  Serial.print('O');
+  Serial.print('a');
+  Serial.print(altitude);
+  Serial.print('v');
+  Serial.print(wind_velocity);
+  Serial.println("");
 }

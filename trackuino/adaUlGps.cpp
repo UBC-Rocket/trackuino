@@ -12,7 +12,7 @@
 #include <SoftwareSerial.h>
 
 #include "adaUlGps.h"
-#include "aerostat_config.h"
+#include "config.h"
 #include "aerostat_utils.h"
 
 // you can change the pin numbers to match your wiring:
@@ -66,7 +66,7 @@ void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLeng
 
   // approximately every 2 seconds, print out the current stats
   if (millis() - *timer > 2000) {
-    *timer = millis(); // reset the timer
+    //*timer = millis(); // reset the timer //Aerostat, temporarily commented out
     formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement);    
   }
 }
@@ -106,7 +106,7 @@ void formatGpsDataAPRS(char gpsString[], int bufferLength, int *altitudeMeasurem
       gpsLongDir = GPS.lon;
     }
 
-    //snprintf(gpsString, bufferLength, formatString, GPS.hour, GPS.minute, GPS.seconds, gpsLatitude, gpsLatDir, gpsLongitude, gpsLongDir, gpsAltitude);
-    //snprintf(gpsString, bufferLength, formatString, GPS.hour, GPS.minute, GPS.seconds, gpsLatitude, gpsLatDir, gpsLongitude, gpsLongDir);
+    //snprintf(, bufferLength, formatString, GPS.hour, GPS.minute, GPS.seconds, gpsLatitude, gpsLatDir, gpsLongitude, gpsLongDir, gpsAltitude);
+    snprintf(gpsString, bufferLength, formatString, GPS.hour, GPS.minute, GPS.seconds, gpsLatitude, gpsLatDir, gpsLongitude, gpsLongDir);
 
 }

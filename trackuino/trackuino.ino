@@ -45,6 +45,12 @@
 #include "sensors_avr.h"
 #include "sensors_pic32.h"
 
+//Aerostat-specific
+#include "aerostat_utils.h"
+#include "windSensor.h"
+#include "barometer.h"
+#include "adaUlGps.h"
+
 // Arduino/AVR libs
 #if (ARDUINO + 1) >= 100
 #  include <Arduino.h>
@@ -64,15 +70,17 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
   pin_write(LED_PIN, LOW);
 
-  Serial.begin(GPS_BAUDRATE);
+  Serial.begin(115200);
 #ifdef DEBUG_RESET
   Serial.println("RESET");
 #endif
 
-  buzzer_setup();
+  //buzzer_setup();
   afsk_setup();
-  gps_setup();
-  sensors_setup();
+  //gps_setup();
+  setupBarometer();
+  setupAdaUlGps();
+  //sensors_setup();
 
 #ifdef DEBUG_SENS
   Serial.print("Ti=");
@@ -82,7 +90,7 @@ void setup()
   Serial.print(", Vin=");
   Serial.println(sensors_vin());
 #endif
-
+  /*
   // Do not start until we get a valid time reference
   // for slotted transmissions.
   if (APRS_SLOT >= 0) {
@@ -98,7 +106,7 @@ void setup()
     next_aprs = millis();
   }  
   // TODO: beep while we get a fix, maybe indicating the number of
-  // visible satellites by a series of short beeps?
+  // visible satellites by a series of short beeps?*/
 }
 
 void get_pos()
@@ -107,6 +115,8 @@ void get_pos()
   int valid_pos = 0;
   uint32_t timeout = millis();
 
+  //Venus GPS, not needed for Aerostat
+/*
 #ifdef DEBUG_GPS
   Serial.println("\nget_pos()");
 #endif
@@ -120,19 +130,35 @@ void get_pos()
 
   if (valid_pos) {
     if (gps_altitude > BUZZER_ALTITUDE) {
-      buzzer_off();   // In space, no one can hear you buzz
+      //buzzer_off();   // In space, no one can hear you buzz //Not needed for Aerostat
     } else {
-      buzzer_on();
+      //buzzer_on(); //Not needed for Aerostat
     }
-  }
+  }*/
 }
 
 void loop()
 {
+   long unsigned int timer = millis() + 3000; //Dummy timer. In the test sketch this timer determined 
+   char gpsString[50];
+   int altMeasurement;
+   adaUlRecievePosition(&timer, gpsString, 49, &altMeasurement);
+  
   // Time for another APRS frame
   if ((int32_t) (millis() - next_aprs) >= 0) {
-    get_pos();
-    aprs_send();
+    //get_pos();
+
+    char altDP[6] = "00000";
+    dtostrf(altMeasurement, 5, 0, altDP); //00000
+    charPadString(altDP, '0', ' ', 1);
+
+    char windDP[4] = "000";
+    formatWindDataString(windDP, measureRevpWind());
+    charPadString(windDP, '0', ' ', 1);
+    
+    aprs_send(gpsString, altDP, windDP);
+
+    
     next_aprs += APRS_PERIOD * 1000L;
     while (afsk_flush()) {
       power_save();
@@ -142,13 +168,13 @@ void loop()
     // Show modem ISR stats from the previous transmission
     afsk_debug();
 #endif
-
-  } else {
-    // Discard GPS data received during sleep window
-    while (Serial.available()) {
-      Serial.read();
-    }
   }
+//  } else {
+//    // Discard GPS data received during sleep window
+//    while (Serial.available()) {
+//      Serial.read();
+//    }
+//  }
 
-  power_save(); // Incoming GPS data or interrupts will wake us up
+  //power_save(); // Incoming GPS data or interrupts will wake us up
 }

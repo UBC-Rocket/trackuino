@@ -20,7 +20,7 @@
  * cathedrow for this idea on using the ADC as a volt meter:
  * http://code.google.com/p/tinkerit/wiki/SecretVoltmeter
  */
-/*
+
 #ifdef AVR
 
 #include "config.h"
@@ -67,8 +67,8 @@ unsigned long sensors_aref()
 #ifndef USE_AREF
 void sensors_setup()
 {
-  pinMode(INTERNAL_LM60_VS_PIN, OUTPUT);
-  pinMode(EXTERNAL_LM60_VS_PIN, OUTPUT);
+  //pinMode(INTERNAL_LM60_VS_PIN, OUTPUT); //Not needed for Aerostat
+  //pinMode(EXTERNAL_LM60_VS_PIN, OUTPUT);
 }
 
 long sensors_internal_temp()
@@ -85,7 +85,7 @@ long sensors_internal_temp()
 
   return result;
 }
-
+/*
 int sensors_lm60(int powerPin, int readPin)
 {
   pin_write(powerPin, HIGH);      // Turn the LM60 on
@@ -117,7 +117,7 @@ int sensors_ext_lm60()
 
 int sensors_int_lm60()
 {
-  return sensors_lm60(INTERNAL_LM60_VS_PIN, INTERNAL_LM60_VOUT_PIN);
+  //return sensors_lm60(INTERNAL_LM60_VS_PIN, INTERNAL_LM60_VOUT_PIN); //Throwing errors. Not needed for Aerostat.
 }
 
 int sensors_vin()
@@ -133,8 +133,6 @@ int sensors_vin()
   int vin = (uint32_t)mV * (VMETER_R1 + VMETER_R2) / VMETER_R2;
   return vin;
 }
-
-
+*/
 #endif
 #endif // ifdef AVR
-*/

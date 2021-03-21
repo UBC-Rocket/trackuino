@@ -39,7 +39,7 @@
 // - Cars:       9
 // - Home:       0
 // - IGate:      5
-#define S_CALLSIGN      "MYCALL"
+#define S_CALLSIGN      "VE7BVU"
 #define S_CALLSIGN_ID   11
 
 // Destination callsign: APRS (with SSID=0) is usually okay.
@@ -56,7 +56,7 @@
 // APRS comment: this goes in the comment portion of the APRS message. You
 // might want to keep this short. The longer the packet, the more vulnerable
 // it is to noise. 
-#define APRS_COMMENT    "Trackuino reminder: replace callsign with your own"
+#define APRS_COMMENT    ""
 
 
 // --------------------------------------------------------------------------
@@ -82,7 +82,7 @@
 // respectively. The first balloon will transmit at 00:00:00, 00:01:00, 
 // 00:02:00, etc. and the second balloon will transmit at 00:00:30, 00:01:30,
 // 00:02:30, etc.
-#define APRS_SLOT     0     // seconds. -1 disables slotted transmissions
+#define APRS_SLOT     -1     // seconds. -1 disables slotted transmissions
 #define APRS_PERIOD   60    // seconds
 
 // GPS baud rate (in bits per second). This is also the baud rate at which
@@ -187,6 +187,24 @@
 // The options here are pin 9 or 10
 // #define BUZZER_PIN              9
 
+
+
+
+
+//Aerostat-specific config begins
+
+
+// --------------------------------------------------------------------------
+// General Aerostat Config
+// --------------------------------------------------------------------------
+
+// Defines the array length for a velocity array
+// Defines the array length for a altitude array
+
+#define TRANSMIT_PERIOD 15
+#define MEASUREMENTS_PER_PERIOD 3
+
+
 // --------------------------------------------------------------------------
 // Adafruit GPS config (adaUlGps.cpp) 
 // --------------------------------------------------------------------------
@@ -289,4 +307,3 @@ when reading an analog value, it measures it against 5V and not 3.3V.*/
 
 
 #endif
-

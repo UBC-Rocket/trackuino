@@ -20,7 +20,7 @@
  * cathedrow for this idea on using the ADC as a volt meter:
  * http://code.google.com/p/tinkerit/wiki/SecretVoltmeter
  */
-/*
+
 #ifdef PIC32MX
 
 #include "config.h"
@@ -79,4 +79,3 @@ int sensors_vin()
 
 
 #endif // ifdef PIC32MX
-*/

@@ -18,6 +18,6 @@
 #ifndef __APRS_H__
 #define __APRS_H__
 
-void aprs_send();
+void aprs_send(char gpsString[], char altitude[], char wind_velocity[]);
 
 #endif

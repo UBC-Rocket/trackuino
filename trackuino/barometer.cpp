@@ -1,5 +1,5 @@
 #include "barometer.h"
-#include "aerostat_config.h"
+#include "config.h"
 #include "aerostat_utils.h"
 
 
