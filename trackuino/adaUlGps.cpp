@@ -65,7 +65,7 @@ void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLeng
   }
 
   // approximately every 2 seconds, print out the current stats
-  if (millis() - *timer > 2000) {
+  if (millis() - *timer > APRS_PERIOD/MEASUREMENTS_PER_PERIOD*1000) {
     //*timer = millis(); // reset the timer //Aerostat, temporarily commented out
     formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement);    
   }

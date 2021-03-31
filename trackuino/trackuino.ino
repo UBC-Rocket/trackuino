@@ -58,11 +58,18 @@
 #  include <WProgram.h>
 #endif
 
+
 // Module constants
 static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 
 // Module variables
-static int32_t next_aprs = 0;
+static unsigned long int measure_timer = 0;
+static unsigned long int aprs_timer = 0; // Defined around line 107
+
+// Variables for storing multiple measurements per measurement period.
+int velocityValues[MEASUREMENTS_PER_PERIOD];
+int altitudeValues[MEASUREMENTS_PER_PERIOD];
+int measurementIndex= 0; //which index of altitude and velocity arrays to fill
 
 
 void setup()
@@ -77,10 +84,9 @@ void setup()
 
   //buzzer_setup();
   afsk_setup();
-  //gps_setup();
   setupBarometer();
   setupAdaUlGps();
-  //sensors_setup();
+
 
 #ifdef DEBUG_SENS
   Serial.print("Ti=");
@@ -90,76 +96,57 @@ void setup()
   Serial.print(", Vin=");
   Serial.println(sensors_vin());
 #endif
-  /*
+  
   // Do not start until we get a valid time reference
   // for slotted transmissions.
+  
+  aprs_timer = millis();
+  measure_timer = millis(); 
+  
   if (APRS_SLOT >= 0) {
-    do {
-      while (! Serial.available())
-        power_save();
-    } while (! gps_decode(Serial.read()));
-    
-    next_aprs = millis() + 1000 *
-      (APRS_PERIOD - (gps_seconds + APRS_PERIOD - APRS_SLOT) % APRS_PERIOD);
+//    do {
+//      while (! Serial.available())
+//        power_save();
+//    } while (! gps_decode(Serial.read()));
+//    
+//    aprs_timer = millis() + 1000 *
+//      (APRS_PERIOD - (gps_seconds + APRS_PERIOD - APRS_SLOT) % APRS_PERIOD);
   }
-  else {
-    next_aprs = millis();
-  }  
+  
   // TODO: beep while we get a fix, maybe indicating the number of
   // visible satellites by a series of short beeps?*/
+  Serial.println("Setup successful");
 }
 
-void get_pos()
-{
-  // Get a valid position from the GPS
-  int valid_pos = 0;
-  uint32_t timeout = millis();
-
-  //Venus GPS, not needed for Aerostat
-/*
-#ifdef DEBUG_GPS
-  Serial.println("\nget_pos()");
-#endif
-
-  gps_reset_parser();
-
-  do {
-    if (Serial.available())
-      valid_pos = gps_decode(Serial.read());
-  } while ( (millis() - timeout < VALID_POS_TIMEOUT) && ! valid_pos) ;
-
-  if (valid_pos) {
-    if (gps_altitude > BUZZER_ALTITUDE) {
-      //buzzer_off();   // In space, no one can hear you buzz //Not needed for Aerostat
-    } else {
-      //buzzer_on(); //Not needed for Aerostat
-    }
-  }*/
-}
 
 void loop()
 {
-   long unsigned int timer = millis() + 3000; //Dummy timer. In the test sketch this timer determined 
    char gpsString[50];
    int altMeasurement;
-   adaUlRecievePosition(&timer, gpsString, 49, &altMeasurement);
+   adaUlRecievePosition(&measure_timer, gpsString, 49, &altMeasurement);
+
+  // Time for another measurement
+  if ((millis() - measure_timer) >= (APRS_PERIOD/MEASUREMENTS_PER_PERIOD*1000))
+  {
+    //add another wind speed measurement to velocityValues, and altitude measurement to velocityValues
+    velocityValues[measurementIndex] = (int)measureRevpWind();
+    altitudeValues[measurementIndex] = altMeasurement;
+   
+    measurementIndex++; 
+
+    measure_timer = millis();
+    Serial.println("Measured");
+  }
+
   
   // Time for another APRS frame
-  if ((int32_t) (millis() - next_aprs) >= 0) {
-    //get_pos();
+  if ((millis() - aprs_timer) >= APRS_PERIOD*1000) {
+    Serial.println(millis() - aprs_timer);
+    aprs_send(gpsString, altitudeValues, velocityValues);
+    measurementIndex = 0;
 
-    char altDP[6] = "00000";
-    dtostrf(altMeasurement, 5, 0, altDP); //00000
-    charPadString(altDP, '0', ' ', 1);
 
-    char windDP[4] = "000";
-    formatWindDataString(windDP, measureRevpWind());
-    charPadString(windDP, '0', ' ', 1);
-    
-    aprs_send(gpsString, altDP, windDP);
-
-    
-    next_aprs += APRS_PERIOD * 1000L;
+    aprs_timer = millis();
     while (afsk_flush()) {
       power_save();
     }
@@ -169,12 +156,4 @@ void loop()
     afsk_debug();
 #endif
   }
-//  } else {
-//    // Discard GPS data received during sleep window
-//    while (Serial.available()) {
-//      Serial.read();
-//    }
-//  }
-
-  //power_save(); // Incoming GPS data or interrupts will wake us up
 }

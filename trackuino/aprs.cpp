@@ -18,6 +18,9 @@
 #include "config.h"
 #include "ax25.h"
 #include "aprs.h"
+#include "aerostat_utils.h"
+#include "windSensor.h"
+#include "adaUlGps.h"
 #include <stdio.h>
 #include <stdlib.h>
 #if (ARDUINO + 1) >= 100
@@ -34,7 +37,7 @@ float meters_to_feet(float m)
 }
 
 // Exported functions
-void aprs_send(char gpsString[], char altitude[], char wind_velocity[])
+void aprs_send(char gpsString[], int altitudeValues[], int velocityValues[])
 {
   char temp[12];                   // Temperature (int/ext)
   const struct s_address addresses[] = { 
@@ -49,28 +52,38 @@ void aprs_send(char gpsString[], char altitude[], char wind_velocity[])
   };
 
   ax25_send_header(addresses, sizeof(addresses)/sizeof(s_address));
-  ax25_send_byte(',');                // Symbol table to seperate different strings while printed
+  ax25_send_byte('/');                // Symbol table to seperate different strings while printed
   ax25_send_string(gpsString);        // contains GPS time, longitude, long dir, latitude, lat dir
   ax25_send_byte('O');                // balloon type identifier is 'O'
-  ax25_send_byte('a');
-  
-  ax25_send_string(altitude);
-  ax25_send_byte('v');
-  ax25_send_string(wind_velocity);
-  //ax25_send_byte('\n');
 
-  ax25_send_string(APRS_COMMENT);     // Comment
-    
-  ax25_send_footer();
-  
-  ax25_flush_frame();                 // Tell the modem to go
-
-    
   Serial.print(gpsString);
   Serial.print('O');
-  Serial.print('a');
-  Serial.print(altitude);
-  Serial.print('v');
-  Serial.print(wind_velocity);
+
+  for (int i = 0; i < MEASUREMENTS_PER_PERIOD; i++)
+      {
+
+        char altDP[6] = "00000";
+        dtostrf(altitudeValues[i], 5, 0, altDP); //00000
+        charPadString(altDP, '0', ' ', 1);
+        
+        char windDP[6] = "000.0";
+        formatWindDataString(windDP, velocityValues[i]);
+        charPadString(windDP, '0', ' ', 1);
+
+        ax25_send_byte('a');
+        ax25_send_string(altDP);
+        ax25_send_byte('v');
+        ax25_send_string(windDP);
+
+        Serial.print('a');
+        Serial.print(altDP);
+        Serial.print('v');
+        Serial.print(windDP);
+      }
+  
+  ax25_send_string(APRS_COMMENT);     // Comment    
+  ax25_send_footer();
+  ax25_flush_frame();                 // Tell the modem to go
+
   Serial.println("");
 }

@@ -201,7 +201,6 @@
 // Defines the array length for a velocity array
 // Defines the array length for a altitude array
 
-#define TRANSMIT_PERIOD 15
 #define MEASUREMENTS_PER_PERIOD 3
 
 
