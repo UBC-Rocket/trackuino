@@ -38,17 +38,9 @@
 #include "afsk_avr.h"
 #include "afsk_pic32.h"
 #include "aprs.h"
-#include "buzzer.h"
 #include "gps.h"
 #include "pin.h"
 #include "power.h"
-#include "sensors_avr.h"
-#include "sensors_pic32.h"
-
-//Aerostat-specific
-#include "aerostat_utils.h"
-#include "windSensor.h"
-#include "barometer.h"
 #include "adaUlGps.h"
 
 // Arduino/AVR libs
@@ -58,18 +50,11 @@
 #  include <WProgram.h>
 #endif
 
-
 // Module constants
 static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 
 // Module variables
-static unsigned long int measure_timer = 0;
-static unsigned long int aprs_timer = 0; // Defined around line 107
-
-// Variables for storing multiple measurements per measurement period.
-int velocityValues[MEASUREMENTS_PER_PERIOD];
-int altitudeValues[MEASUREMENTS_PER_PERIOD];
-int measurementIndex= 0; //which index of altitude and velocity arrays to fill
+static int32_t next_aprs = 0;
 
 
 void setup()
@@ -78,82 +63,64 @@ void setup()
   pin_write(LED_PIN, LOW);
 
   Serial.begin(115200);
+  delay(2000);
 #ifdef DEBUG_RESET
   Serial.println("RESET");
 #endif
 
   //buzzer_setup();
   afsk_setup();
-  setupBarometer();
+  //gps_setup();
+  //sensors_setup();
   setupAdaUlGps();
-
-
-#ifdef DEBUG_SENS
-  Serial.print("Ti=");
-  Serial.print(sensors_int_lm60());
-  Serial.print(", Te=");
-  Serial.print(sensors_ext_lm60());
-  Serial.print(", Vin=");
-  Serial.println(sensors_vin());
-#endif
   
+
   // Do not start until we get a valid time reference
   // for slotted transmissions.
-  
-  aprs_timer = millis();
-  measure_timer = millis(); 
-  
-  if (APRS_SLOT >= 0) {
+//  if (APRS_SLOT >= 0) {
 //    do {
 //      while (! Serial.available())
 //        power_save();
 //    } while (! gps_decode(Serial.read()));
 //    
-//    aprs_timer = millis() + 1000 *
+//    next_aprs = millis() + 1000 *
 //      (APRS_PERIOD - (gps_seconds + APRS_PERIOD - APRS_SLOT) % APRS_PERIOD);
-  }
+//  }
+//  else {
+//    next_aprs = millis();
+//  }  
+
+  next_aprs = millis();
   
   // TODO: beep while we get a fix, maybe indicating the number of
-  // visible satellites by a series of short beeps?*/
-  Serial.println("Setup successful");
+  // visible satellites by a series of short beeps?
+  Serial.println(F("S"));
 }
 
 
 void loop()
 {
-   char gpsString[50];
-   int altMeasurement;
-   adaUlRecievePosition(&measure_timer, gpsString, 49, &altMeasurement);
-
-  // Time for another measurement
-  if ((millis() - measure_timer) >= (APRS_PERIOD/MEASUREMENTS_PER_PERIOD*1000))
-  {
-    //add another wind speed measurement to velocityValues, and altitude measurement to velocityValues
-    velocityValues[measurementIndex] = (int)measureRevpWind();
-    altitudeValues[measurementIndex] = altMeasurement;
-   
-    measurementIndex++; 
-
-    measure_timer = millis();
-    Serial.println("Measured");
-  }
+  // Receive GPS data 
+  char gpsString[30];
+  int altMeasurement;
+  adaUlRecievePosition(0, gpsString, 29, &altMeasurement); //&timer
 
   
   // Time for another APRS frame
-  if ((millis() - aprs_timer) >= APRS_PERIOD*1000) {
-    Serial.println(millis() - aprs_timer);
-    aprs_send(gpsString, altitudeValues, velocityValues);
-    measurementIndex = 0;
-
-
-    aprs_timer = millis();
+  if ((int32_t) (millis() - next_aprs) >= 0) {
+    //get_pos();
+    aprs_send();
+    next_aprs += APRS_PERIOD * 1000L;
     while (afsk_flush()) {
-      power_save();
+      //power_save();
     }
 
 #ifdef DEBUG_MODEM
     // Show modem ISR stats from the previous transmission
     afsk_debug();
 #endif
-  }
+
+  } 
+
+  //power_save(); // Incoming GPS data or interrupts will wake us up
 }

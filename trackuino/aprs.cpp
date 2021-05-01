@@ -17,10 +17,10 @@
 
 #include "config.h"
 #include "ax25.h"
+#include "gps.h"
 #include "aprs.h"
-#include "aerostat_utils.h"
-#include "windSensor.h"
-#include "adaUlGps.h"
+#include "sensors_avr.h"
+#include "sensors_pic32.h"
 #include <stdio.h>
 #include <stdlib.h>
 #if (ARDUINO + 1) >= 100
@@ -37,7 +37,7 @@ float meters_to_feet(float m)
 }
 
 // Exported functions
-void aprs_send(char gpsString[], int altitudeValues[], int velocityValues[])
+void aprs_send()
 {
   char temp[12];                   // Temperature (int/ext)
   const struct s_address addresses[] = { 
@@ -52,38 +52,37 @@ void aprs_send(char gpsString[], int altitudeValues[], int velocityValues[])
   };
 
   ax25_send_header(addresses, sizeof(addresses)/sizeof(s_address));
-  ax25_send_byte('/');                // Symbol table to seperate different strings while printed
-  ax25_send_string(gpsString);        // contains GPS time, longitude, long dir, latitude, lat dir
-  ax25_send_byte('O');                // balloon type identifier is 'O'
-
-  Serial.print(gpsString);
-  Serial.print('O');
-
-  for (int i = 0; i < MEASUREMENTS_PER_PERIOD; i++)
-      {
-
-        char altDP[6] = "00000";
-        dtostrf(altitudeValues[i], 5, 0, altDP); //00000
-        charPadString(altDP, '0', ' ', 1);
-        
-        char windDP[6] = "000.0";
-        formatWindDataString(windDP, velocityValues[i]);
-        charPadString(windDP, '0', ' ', 1);
-
-        ax25_send_byte('a');
-        ax25_send_string(altDP);
-        ax25_send_byte('v');
-        ax25_send_string(windDP);
-
-        Serial.print('a');
-        Serial.print(altDP);
-        Serial.print('v');
-        Serial.print(windDP);
-      }
-  
-  ax25_send_string(APRS_COMMENT);     // Comment    
+  ax25_send_byte('/');                // Report w/ timestamp, no APRS messaging. $ = NMEA raw data
+  // ax25_send_string("021709z");     // 021709z = 2nd day of the month, 17:09 zulu (UTC/GMT)
+  ax25_send_string(gps_time);         // 170915 = 17h:09m:15s zulu (not allowed in Status Reports)
+  ax25_send_byte('h');
+  ax25_send_string(gps_aprs_lat);     // Lat: 38deg and 22.20 min (.20 are NOT seconds, but 1/100th of minutes)
+  ax25_send_byte('/');                // Symbol table
+  ax25_send_string(gps_aprs_lon);     // Lon: 000deg and 25.80 min
+  ax25_send_byte('O');                // Symbol: O=balloon, -=QTH
+  snprintf(temp, 4, "%03d", (int)(gps_course + 0.5)); 
+  ax25_send_string(temp);             // Course (degrees)
+  ax25_send_byte('/');                // and
+  snprintf(temp, 4, "%03d", (int)(gps_speed + 0.5));
+  ax25_send_string(temp);             // speed (knots)
+  ax25_send_string("/A=");            // Altitude (feet). Goes anywhere in the comment area
+  snprintf(temp, 7, "%06ld", (long)(meters_to_feet(gps_altitude) + 0.5));
+  ax25_send_string(temp);
+  ax25_send_string("/Ti=");
+  snprintf(temp, 6, "%d", 777);
+  ax25_send_string(temp);
+  ax25_send_string("/Te=");
+  snprintf(temp, 6, "%d", 888);
+  ax25_send_string(temp);
+  ax25_send_string("/V=");
+  snprintf(temp, 6, "%d", 999);
+  ax25_send_string(temp);
+  ax25_send_byte(' ');
+  ax25_send_string(APRS_COMMENT);     // Comment
   ax25_send_footer();
+
   ax25_flush_frame();                 // Tell the modem to go
 
-  Serial.println("");
+  Serial.println(F("T"));
+
 }

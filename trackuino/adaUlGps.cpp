@@ -65,10 +65,12 @@ void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLeng
   }
 
   // approximately every 2 seconds, print out the current stats
-  if (millis() - *timer > APRS_PERIOD/MEASUREMENTS_PER_PERIOD*1000) {
-    //*timer = millis(); // reset the timer //Aerostat, temporarily commented out
-    formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement);    
-  }
+  Serial.println("G");
+//  if (millis() - *timer > 2000) {
+//    *timer = millis(); // reset the timer
+//       
+//  }
+  formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement); 
 }
 
 
@@ -106,7 +108,6 @@ void formatGpsDataAPRS(char gpsString[], int bufferLength, int *altitudeMeasurem
       gpsLongDir = GPS.lon;
     }
 
-    //snprintf(, bufferLength, formatString, GPS.hour, GPS.minute, GPS.seconds, gpsLatitude, gpsLatDir, gpsLongitude, gpsLongDir, gpsAltitude);
     snprintf(gpsString, bufferLength, formatString, GPS.hour, GPS.minute, GPS.seconds, gpsLatitude, gpsLatDir, gpsLongitude, gpsLongDir);
 
 }

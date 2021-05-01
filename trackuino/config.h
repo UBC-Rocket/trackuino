@@ -56,7 +56,7 @@
 // APRS comment: this goes in the comment portion of the APRS message. You
 // might want to keep this short. The longer the packet, the more vulnerable
 // it is to noise. 
-#define APRS_COMMENT    ""
+#define APRS_COMMENT    "Trackuino reminder: replace callsign with your own"
 
 
 // --------------------------------------------------------------------------
@@ -82,8 +82,8 @@
 // respectively. The first balloon will transmit at 00:00:00, 00:01:00, 
 // 00:02:00, etc. and the second balloon will transmit at 00:00:30, 00:01:30,
 // 00:02:30, etc.
-#define APRS_SLOT     -1     // seconds. -1 disables slotted transmissions
-#define APRS_PERIOD   60    // seconds
+#define APRS_SLOT     0     // seconds. -1 disables slotted transmissions
+#define APRS_PERIOD   10    // seconds
 
 // GPS baud rate (in bits per second). This is also the baud rate at which
 // debug data will be printed out the serial port.
@@ -112,162 +112,6 @@
 
 // This is the PTT pin
 #define PTT_PIN           4
-
-// --------------------------------------------------------------------------
-// Sensors config (sensors.cpp) NOT USED
-// --------------------------------------------------------------------------
-
-// Most of the sensors.cpp functions use internal reference voltages (either
-// AVCC or 1.1V). If you want to use an external reference, you should
-// uncomment the following line:
-//
-// #define USE_AREF
-//
-// BEWARE! If you hook up an external voltage to the AREF pin and 
-// accidentally set the ADC to any of the internal references, YOU WILL
-// FRY YOUR AVR.
-//
-// It is always advised to connect the AREF pin through a pull-up resistor,
-// whose value is defined here in ohms (set to 0 if no pull-up):
-//
-// #define AREF_PULLUP           4700
-//
-// Since there is already a 32K resistor at the ADC pin, the actual
-// voltage read will be VREF * 32 / (32 + AREF_PULLUP)
-//
-// Read more in the Arduino reference docs:
-// http://arduino.cc/en/Reference/AnalogReference?from=Reference.AREF
-
-// Pin mappings for the internal / external temperature sensors. VS refers
-// to (arduino) digital pins, whereas VOUT refers to (arduino) analog pins.
-// #define INTERNAL_LM60_VS_PIN     6
-// #define INTERNAL_LM60_VOUT_PIN   0
-// #define EXTERNAL_LM60_VS_PIN     7
-// #define EXTERNAL_LM60_VOUT_PIN   1
-
-// Units for temperature sensors (Added by: Kyle Crockett)
-// 1 = Celsius, 2 = Kelvin, 3 = Fahrenheit
-// #define TEMP_UNIT 1
-
-// Calibration value in the units selected. Use integer only.
-// #define CALIBRATION_VAL 0
-
-// Resistors divider for the voltage meter (ohms)
-// #define VMETER_R1       10000
-// #define VMETER_R2       3300
-
-// Voltage meter analog pin
-// #define VMETER_PIN      2
-
-// --------------------------------------------------------------------------
-// Buzzer config (buzzer.cpp) NOT USED
-// --------------------------------------------------------------------------
-
-// Type of buzzer (0=active, 1=passive). An active buzzer is driven by a
-// DC voltage. A passive buzzer needs a PWM signal.
-// #define BUZZER_TYPE             0
-
-// When using a passive buzzer, specify the PWM frequency here. Choose one
-// that maximizes the volume according to the buzzer's datasheet. Not all
-// the frequencies are valid, check out the buzzer_*.cpp code. On Arduino,
-// it must be between L and 65535, where L = F_CPU / 65535 and F_CPU is the
-// clock rate in hertzs. For 16 MHz Arduinos, this gives a lower limit of 
-// 245 Hz.
-// #define BUZZER_FREQ             895     // Hz
-
-// These are the number of seconds the buzzer will stay on/off alternately
-// #define BUZZER_ON_TIME          1       // secs
-// #define BUZZER_OFF_TIME         2       // secs
-
-// This option disables the buzzer above BUZZER_ALTITUDE meters. This is a
-// float value, so make it really high (eg. 1000000.0 = 1 million meters)
-// if you want it to never stop buzzing.
-// #define BUZZER_ALTITUDE         3000.0  // meters (1 ft = 0.3048 m)
-
-// The options here are pin 9 or 10
-// #define BUZZER_PIN              9
-
-
-
-
-
-//Aerostat-specific config begins
-
-
-// --------------------------------------------------------------------------
-// General Aerostat Config
-// --------------------------------------------------------------------------
-
-// Defines the array length for a velocity array
-// Defines the array length for a altitude array
-
-#define MEASUREMENTS_PER_PERIOD 3
-
-
-// --------------------------------------------------------------------------
-// Adafruit GPS config (adaUlGps.cpp) 
-// --------------------------------------------------------------------------
-
-// Connect the GPS TX (transmit) pin to digital ADAULGPS_TX_PIN
-#define ADAULGPS_TX_PIN           8
-// Connect the GPS RX (receive) pin to digital ADAULGPS_RX_PIN
-#define ADAULGPS_RX_PIN           7
-
-// Not needed
-// #define GPSECHO                   true
-
-
-// --------------------------------------------------------------------------
-// Barometer config (barometer.cpp) NOT USED
-// --------------------------------------------------------------------------
-
-//Connections: look at the sensor FROM THE FRONT (the pointy part faces you)
-// *    Pin 1: Not connected
-// *    Pin 2: 3.3 V In
-// *    Pin 3: Output (Connect to BAR_PIN, an analog pin)
-// *    Pin 4: GND
-
-// Barometer pin
-#define BAROMETER_PIN A5
-
-//need to add value and comment
-// #define INPUT
-
-// Constants for Honeywell Barometer transfer function. DO NOT CHANGE!
-#define BAROMETER_V_SUPPLY          3.3
-#define BAROMETER_V_REFERENCE       5.0
-/*The supply voltage should be 3.3 V, NOT 5 Volts. However, the Arduino runs on 5 V logic and so
-when reading an analog value, it measures it against 5V and not 3.3V.*/
-
-//units: mbar
-#define BAROMETER_P_MIN             0.0 
-// units: bar
-#define BAROMETER_P_MAX             1.0 
-
-// P_MIN is pegged at 10% of the total output voltage (10% of V_SUPPLY)
-#define BAROMETER_TRANS_FUN_MIN     0.1
-// P_MAX is pegged at 90% of total output voltage (90% of V_SUPPLY)
-#define BAROMETER_TRANS_FUN_MAX     0.9
-
-
-// --------------------------------------------------------------------------
-// Windsensor config (windSensor.cpp) 
-// --------------------------------------------------------------------------
-
-
-//* The Rev P requires at least at least an 8 volt supply. The easiest way to power it 
-//* if you are using an Arduino is to use a 9 volt or higher supply on the external power jack
-//* and power the sensor from Vin.
-
-//* Hardware hookup 
-//* Sensor     Arduino Pin
-//* Ground     Ground
-//* +10-12V      Vin
-//* Out          A0
-//* TMP          A2
-
-#define WIND_OUTPUT_PIN         A0
-#define WIND_TEMP_PIN           A2
 
 
 // --------------------------------------------------------------------------
@@ -303,6 +147,27 @@ when reading an analog value, it measures it against 5V and not 3.3V.*/
 // #define DEBUG_AFSK   // AFSK (modulation) output
 // #define DEBUG_RESET  // AVR reset
 // #define DEBUG_SENS   // Sensors
+
+//===================================================================================================
+//===================================================================================================
+//============================             Aerostat Config               ============================
+//===================================================================================================
+//===================================================================================================
+
+// --------------------------------------------------------------------------
+// Adafruit Ultimate GPS Config (adaUlGps.cpp)
+// --------------------------------------------------------------------------
+
+// Connect the GPS Power pin to 5V
+// Connect the GPS Ground pin to ground
+// Connect the GPS TX (transmit) pin to digital ADAULGPS_TX_PIN
+// Connect the GPS RX (receive) pin to digital ADAULGPS_RX_PIN
+
+#define ADAULGPS_TX_PIN 8
+#define ADAULGPS_RX_PIN 7
+
+#define GPSECHO true
+
 
 
 #endif
