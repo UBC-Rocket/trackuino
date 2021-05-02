@@ -9,15 +9,18 @@
  */
 
 #include <Adafruit_GPS.h>
-#include <SoftwareSerial.h>
+//#include <SoftwareSerial.h>
 
 #include "adaUlGps.h"
 #include "config.h"
 #include "aerostat_utils.h"
 
 // you can change the pin numbers to match your wiring:
-SoftwareSerial mySerial(ADAULGPS_TX_PIN, ADAULGPS_RX_PIN);
-Adafruit_GPS GPS(&mySerial);
+//SoftwareSerial mySerial(ADAULGPS_TX_PIN, ADAULGPS_RX_PIN);
+//Adafruit_GPS GPS(&mySerial);
+
+#define GPSSerial Serial1
+Adafruit_GPS GPS(&GPSSerial);
 
 
 void setupAdaUlGps(void)
@@ -42,7 +45,8 @@ void setupAdaUlGps(void)
 
   delay(1000);
   // Ask for firmware version
-  mySerial.println(PMTK_Q_RELEASE);
+  //mySerial.println(PMTK_Q_RELEASE);
+  GPSSerial.println(PMTK_Q_RELEASE);
 }
 
 
@@ -65,7 +69,7 @@ void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLeng
   }
 
   // approximately every 2 seconds, print out the current stats
-  Serial.println("G");
+  //Serial.println("G");
 //  if (millis() - *timer > 2000) {
 //    *timer = millis(); // reset the timer
 //       
