@@ -9,16 +9,22 @@
  */
 
 #include <Adafruit_GPS.h>
+<<<<<<< Updated upstream
 //#include <SoftwareSerial.h>
+=======
+>>>>>>> Stashed changes
 
 #include "adaUlGps.h"
 #include "config.h"
 #include "aerostat_utils.h"
 
 // you can change the pin numbers to match your wiring:
+<<<<<<< Updated upstream
 //SoftwareSerial mySerial(ADAULGPS_TX_PIN, ADAULGPS_RX_PIN);
 //Adafruit_GPS GPS(&mySerial);
 
+=======
+>>>>>>> Stashed changes
 #define GPSSerial Serial1
 Adafruit_GPS GPS(&GPSSerial);
 
@@ -45,7 +51,10 @@ void setupAdaUlGps(void)
 
   delay(1000);
   // Ask for firmware version
+<<<<<<< Updated upstream
   //mySerial.println(PMTK_Q_RELEASE);
+=======
+>>>>>>> Stashed changes
   GPSSerial.println(PMTK_Q_RELEASE);
 }
 
@@ -69,34 +78,38 @@ void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLeng
   }
 
   // approximately every 2 seconds, print out the current stats
+<<<<<<< Updated upstream
   //Serial.println("G");
 //  if (millis() - *timer > 2000) {
 //    *timer = millis(); // reset the timer
 //       
 //  }
   formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement); 
+=======
+  if (millis() - *timer > APRS_PERIOD/MEASUREMENTS_PER_PERIOD*1000) {
+    //*timer = millis(); // reset the timer //Aerostat, temporarily commented out
+  }
+  formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement);
+>>>>>>> Stashed changes
 }
 
 
 void formatGpsDataAPRS(char gpsString[], int bufferLength, int *altitudeMeasurement)
 {
-    //const char formatString[] = "%02d%02d%02d,%08s,%c,%09s,%c,%06s";
-    // hhmmss,[latitude],[N or S], [longitude], [E or W], [angle]
-    
-    const char formatString[] = "%02d%02d%02dh%08s%c%09s%c";
+    const char formatString[] = "%02d%02d%02dh%07s%c%08s%c";
     //hhmmss[h][latitude][N][longitude][S]
     
-    char gpsLatitude[9] = "0000.000";
+    char gpsLatitude[8] = "0000.00";
     char gpsLatDir = 'N';
-    char gpsLongitude[10] = "00000.000";
+    char gpsLongitude[9] = "00000.00";
     char gpsLongDir = 'E';
     
     if (GPS.fix)
     {      
-      dtostrf(GPS.latitude, 8, 3, gpsLatitude); //0000.000
+      dtostrf(GPS.latitude, 7, 2, gpsLatitude); //0000.00
       charPadString(gpsLatitude, '0', ' ', 1);
       
-      dtostrf(GPS.longitude, 9, 3, gpsLongitude); //00000.000
+      dtostrf(GPS.longitude, 8, 2, gpsLongitude); //00000.00
       charPadString(gpsLongitude, '0', ' ', 1);
 
       if (GPS.altitude < 0)

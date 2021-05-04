@@ -30,6 +30,7 @@
 
 void disable_bod_and_sleep()
 {
+<<<<<<< Updated upstream
 //  /* This will turn off brown-out detection while
 //   * sleeping. Unfortunately this won't work in IDLE mode.
 //   * Relevant info about BOD disabling: datasheet p.44
@@ -43,6 +44,21 @@ void disable_bod_and_sleep()
 //   * The catch is that we *must* go to sleep between 2
 //   * and 3, ie. just before BODS turns 0.
 //   */
+=======
+  /* This will turn off brown-out detection while
+   * sleeping. Unfortunately this won't work in IDLE mode.
+   * Relevant info about BOD disabling: datasheet p.44
+   *
+   * Procedure to disable the BOD:
+   *
+   * 1. BODSE and BODS must be set to 1
+   * 2. Turn BODSE to 0
+   * 3. BODS will automatically turn 0 after 4 cycles
+   *
+   * The catch is that we *must* go to sleep between 2
+   * and 3, ie. just before BODS turns 0.
+   */
+>>>>>>> Stashed changes
 //  unsigned char mcucr;
 //
 //  cli();

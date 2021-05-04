@@ -1,4 +1,5 @@
 /* trackuino copyright (C) 2010  EA5HAV Javi
+ * Modifications by Peter Goubarev (VE7BVU) and Anqi Xu () for UBC Rocket, Aerostat subteam; 2021
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -14,6 +15,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
+// IMPORTANT!
+
+// CHANGES THAT HAVE BEEN MADE TO MAKE TRACKUINO COMPATIBLE WITH A MEGA (and must be undone to go back): 
+// - We no longer use sleep mode (for other reasons); on a mega, we must remove BOD disabling during sleep (uncomment the disable_bod_and_sleep() function)
+// - We use HardwareSerial with the Adafruit Ultimate GPS (and pins 19/18 on Mega)
+// - AUDIO_PIN is now 9 instead of 3 (corresponding to Timer2)
+
+ 
 
 // Mpide 22 fails to compile Arduino code because it stupidly defines ARDUINO 
 // as an empty macro (hence the +0 hack). UNO32 builds are fine. Just use the
@@ -100,6 +110,7 @@ void setup()
 
 void loop()
 {
+<<<<<<< Updated upstream
   // Receive GPS data 
   char gpsString[30];
   int altMeasurement;
@@ -117,6 +128,35 @@ void loop()
       /*
       WARNING: IF ENABLING POWER_SAVE, MAKE SURE TO UNCOMMENT BROWN-OUT DETECTION IN power_avr.cpp, i.e. uncomment disable_bod_and_sleep()
       */
+=======
+   char gpsString[50];
+   int altMeasurement;
+   adaUlRecievePosition(&measure_timer, gpsString, 49, &altMeasurement);
+
+  // Time for another measurement
+  if ((millis() - measure_timer) >= (APRS_PERIOD/MEASUREMENTS_PER_PERIOD))
+  {
+    //add another wind speed measurement to velocityValues, and altitude measurement to velocityValues
+    velocityValues[measurementIndex] = (int)measureRevpWind();
+    altitudeValues[measurementIndex] = altMeasurement;
+   
+    measurementIndex++; 
+
+    measure_timer = millis();
+    Serial.println("Measured");
+  }
+
+  
+  // Time for another APRS frame
+  if ((millis() - aprs_timer) >= APRS_PERIOD) {
+    //Serial.println(millis() - aprs_timer);
+    aprs_send(gpsString, altitudeValues, velocityValues);
+    measurementIndex = 0;
+
+
+    aprs_timer = millis();
+    while (afsk_flush()) {
+>>>>>>> Stashed changes
       //power_save();
     }
 

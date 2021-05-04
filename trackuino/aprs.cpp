@@ -52,6 +52,7 @@ void aprs_send()
   };
 
   ax25_send_header(addresses, sizeof(addresses)/sizeof(s_address));
+<<<<<<< Updated upstream
   ax25_send_byte('/');                // Report w/ timestamp, no APRS messaging. $ = NMEA raw data
   // ax25_send_string("021709z");     // 021709z = 2nd day of the month, 17:09 zulu (UTC/GMT)
   ax25_send_string(gps_time);         // 170915 = 17h:09m:15s zulu (not allowed in Status Reports)
@@ -79,6 +80,38 @@ void aprs_send()
   ax25_send_string(temp);
   ax25_send_byte(' ');
   ax25_send_string(APRS_COMMENT);     // Comment
+=======
+  ax25_send_byte('/');                // Symbol table to seperate different strings while printed
+  ax25_send_string(gpsString);        // contains GPS time, longitude, long dir, latitude, lat dir
+  ax25_send_byte('O');                // balloon type identifier is 'O'
+
+  Serial.print(gpsString);
+  Serial.print('O');
+
+  for (int i = 0; i < MEASUREMENTS_PER_PERIOD; i++)
+      {
+
+        char altDP[6] = "00000";
+        dtostrf(altitudeValues[i], 5, 0, altDP); //00000
+        charPadString(altDP, '0', ' ', 1);
+        
+        char windDP[4] = "000";
+        formatWindDataString(windDP, velocityValues[i]);
+        charPadString(windDP, '0', ' ', 1);
+
+        ax25_send_byte('a');
+        ax25_send_string(altDP);
+        ax25_send_byte('v');
+        ax25_send_string(windDP);
+
+        Serial.print('a');
+        Serial.print(altDP);
+        Serial.print('v');
+        Serial.print(windDP);
+      }
+  
+  ax25_send_string(APRS_COMMENT);     // Comment    
+>>>>>>> Stashed changes
   ax25_send_footer();
 
   ax25_flush_frame();                 // Tell the modem to go
