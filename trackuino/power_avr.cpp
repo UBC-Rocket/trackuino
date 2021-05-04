@@ -30,6 +30,7 @@
 
 void disable_bod_and_sleep()
 {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 //  /* This will turn off brown-out detection while
 //   * sleeping. Unfortunately this won't work in IDLE mode.
@@ -45,6 +46,8 @@ void disable_bod_and_sleep()
 //   * and 3, ie. just before BODS turns 0.
 //   */
 =======
+=======
+>>>>>>> parent of 31f9a20 (Transition to Mega)
   /* This will turn off brown-out detection while
    * sleeping. Unfortunately this won't work in IDLE mode.
    * Relevant info about BOD disabling: datasheet p.44
@@ -58,6 +61,7 @@ void disable_bod_and_sleep()
    * The catch is that we *must* go to sleep between 2
    * and 3, ie. just before BODS turns 0.
    */
+<<<<<<< HEAD
 >>>>>>> Stashed changes
 //  unsigned char mcucr;
 //
@@ -67,6 +71,16 @@ void disable_bod_and_sleep()
 //  MCUCR = mcucr & (~_BV(BODSE));
 //  sei();
 //  sleep_mode();    // Go to sleep
+=======
+  unsigned char mcucr;
+
+  cli();
+  mcucr = MCUCR | (_BV(BODS) | _BV(BODSE));
+  MCUCR = mcucr;
+  MCUCR = mcucr & (~_BV(BODSE));
+  sei();
+  sleep_mode();    // Go to sleep
+>>>>>>> parent of 31f9a20 (Transition to Mega)
 }
 
 void power_save()

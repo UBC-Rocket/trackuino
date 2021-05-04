@@ -121,10 +121,9 @@ void loop()
   if ((int32_t) (millis() - next_aprs) >= 0) {
     //get_pos();
     aprs_send();
-    Serial.println(gpsString);
-    Serial.println(altMeasurement);
     next_aprs += APRS_PERIOD * 1000L;
     while (afsk_flush()) {
+<<<<<<< HEAD
       /*
       WARNING: IF ENABLING POWER_SAVE, MAKE SURE TO UNCOMMENT BROWN-OUT DETECTION IN power_avr.cpp, i.e. uncomment disable_bod_and_sleep()
       */
@@ -157,6 +156,8 @@ void loop()
     aprs_timer = millis();
     while (afsk_flush()) {
 >>>>>>> Stashed changes
+=======
+>>>>>>> parent of 31f9a20 (Transition to Mega)
       //power_save();
     }
 
@@ -166,8 +167,6 @@ void loop()
 #endif
 
   } 
-  /*
-  WARNING: IF ENABLING POWER_SAVE, MAKE SURE TO UNCOMMENT BROWN-OUT DETECTION IN power_avr.cpp, i.e. uncomment disable_bod_and_sleep()
-  */
+
   //power_save(); // Incoming GPS data or interrupts will wake us up
 }

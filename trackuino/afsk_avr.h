@@ -36,6 +36,7 @@ extern const uint32_t PLAYBACK_RATE;
 extern const uint8_t afsk_sine_table[] PROGMEM;
 
 // Inline functions (this saves precious cycles in the ISR)
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 #if AUDIO_PIN == 9 /*3 ror UNO, 9 for Mega*/
 #  define OCR2 OCR2B
@@ -47,6 +48,12 @@ extern const uint8_t afsk_sine_table[] PROGMEM;
 #endif
 #if AUDIO_PIN == 10
 >>>>>>> Stashed changes
+=======
+#if AUDIO_PIN == 3
+#  define OCR2 OCR2B
+#endif
+#if AUDIO_PIN == 11
+>>>>>>> parent of 31f9a20 (Transition to Mega)
 #  define OCR2 OCR2A
 #endif
 

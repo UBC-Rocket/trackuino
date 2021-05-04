@@ -56,7 +56,7 @@
 // APRS comment: this goes in the comment portion of the APRS message. You
 // might want to keep this short. The longer the packet, the more vulnerable
 // it is to noise. 
-#define APRS_COMMENT    "UBC Rocket"
+#define APRS_COMMENT    "Trackuino reminder: replace callsign with your own"
 
 
 // --------------------------------------------------------------------------
@@ -104,6 +104,7 @@
 // PWM, so the only two options are pins 3 and 11.
 // Pin 11 doubles as MOSI, so I suggest using pin 3 for PWM and leave 11 free
 // in case you ever want to interface with an SPI device.
+<<<<<<< HEAD
 
 // For Arduino Mega, use pin 9 or 10.
 
@@ -113,6 +114,9 @@
 // in case you ever want to interface with an SPI device.]
 >>>>>>> Stashed changes
 #define AUDIO_PIN       9
+=======
+#define AUDIO_PIN       3
+>>>>>>> parent of 31f9a20 (Transition to Mega)
 
 // Pre-emphasize the 2200 tone by 6 dB. This is actually done by 
 // de-emphasizing the 1200 tone by 6 dB and it might greatly improve

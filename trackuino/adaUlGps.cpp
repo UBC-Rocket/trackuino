@@ -9,16 +9,21 @@
  */
 
 #include <Adafruit_GPS.h>
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 //#include <SoftwareSerial.h>
 =======
 >>>>>>> Stashed changes
+=======
+#include <SoftwareSerial.h>
+>>>>>>> parent of 31f9a20 (Transition to Mega)
 
 #include "adaUlGps.h"
 #include "config.h"
 #include "aerostat_utils.h"
 
 // you can change the pin numbers to match your wiring:
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 //SoftwareSerial mySerial(ADAULGPS_TX_PIN, ADAULGPS_RX_PIN);
 //Adafruit_GPS GPS(&mySerial);
@@ -27,6 +32,10 @@
 >>>>>>> Stashed changes
 #define GPSSerial Serial1
 Adafruit_GPS GPS(&GPSSerial);
+=======
+SoftwareSerial mySerial(ADAULGPS_TX_PIN, ADAULGPS_RX_PIN);
+Adafruit_GPS GPS(&mySerial);
+>>>>>>> parent of 31f9a20 (Transition to Mega)
 
 
 void setupAdaUlGps(void)
@@ -51,11 +60,15 @@ void setupAdaUlGps(void)
 
   delay(1000);
   // Ask for firmware version
+<<<<<<< HEAD
 <<<<<<< Updated upstream
   //mySerial.println(PMTK_Q_RELEASE);
 =======
 >>>>>>> Stashed changes
   GPSSerial.println(PMTK_Q_RELEASE);
+=======
+  mySerial.println(PMTK_Q_RELEASE);
+>>>>>>> parent of 31f9a20 (Transition to Mega)
 }
 
 
@@ -78,8 +91,12 @@ void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLeng
   }
 
   // approximately every 2 seconds, print out the current stats
+<<<<<<< HEAD
 <<<<<<< Updated upstream
   //Serial.println("G");
+=======
+  Serial.println("G");
+>>>>>>> parent of 31f9a20 (Transition to Mega)
 //  if (millis() - *timer > 2000) {
 //    *timer = millis(); // reset the timer
 //       
