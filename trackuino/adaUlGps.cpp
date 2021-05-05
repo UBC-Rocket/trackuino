@@ -9,33 +9,14 @@
  */
 
 #include <Adafruit_GPS.h>
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-//#include <SoftwareSerial.h>
-=======
->>>>>>> Stashed changes
-=======
-#include <SoftwareSerial.h>
->>>>>>> parent of 31f9a20 (Transition to Mega)
 
 #include "adaUlGps.h"
 #include "config.h"
 #include "aerostat_utils.h"
 
 // you can change the pin numbers to match your wiring:
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-//SoftwareSerial mySerial(ADAULGPS_TX_PIN, ADAULGPS_RX_PIN);
-//Adafruit_GPS GPS(&mySerial);
-
-=======
->>>>>>> Stashed changes
 #define GPSSerial Serial1
 Adafruit_GPS GPS(&GPSSerial);
-=======
-SoftwareSerial mySerial(ADAULGPS_TX_PIN, ADAULGPS_RX_PIN);
-Adafruit_GPS GPS(&mySerial);
->>>>>>> parent of 31f9a20 (Transition to Mega)
 
 
 void setupAdaUlGps(void)
@@ -60,15 +41,7 @@ void setupAdaUlGps(void)
 
   delay(1000);
   // Ask for firmware version
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-  //mySerial.println(PMTK_Q_RELEASE);
-=======
->>>>>>> Stashed changes
   GPSSerial.println(PMTK_Q_RELEASE);
-=======
-  mySerial.println(PMTK_Q_RELEASE);
->>>>>>> parent of 31f9a20 (Transition to Mega)
 }
 
 
@@ -90,29 +63,12 @@ void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLeng
       return;  // we can fail to parse a sentence in which case we should just wait for another
   }
 
-  // approximately every 2 seconds, print out the current stats
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-  //Serial.println("G");
-=======
-  Serial.println("G");
->>>>>>> parent of 31f9a20 (Transition to Mega)
-//  if (millis() - *timer > 2000) {
-//    *timer = millis(); // reset the timer
-//       
-//  }
-  formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement); 
-=======
-  if (millis() - *timer > APRS_PERIOD/MEASUREMENTS_PER_PERIOD*1000) {
-    //*timer = millis(); // reset the timer //Aerostat, temporarily commented out
-  }
   formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement);
->>>>>>> Stashed changes
 }
 
 
-void formatGpsDataAPRS(char gpsString[], int bufferLength, int *altitudeMeasurement)
-{
+void formatGpsDataAPRS(char gpsString[], int bufferLength, int *altitudeMeasurement) {
+
     const char formatString[] = "%02d%02d%02dh%07s%c%08s%c";
     //hhmmss[h][latitude][N][longitude][S]
     

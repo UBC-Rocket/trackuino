@@ -22,27 +22,11 @@
 #include <plib.h>
 #include <WProgram.h>
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-#if AUDIO_PIN == 9 //3 for uno, 9 for mega
-#  define OCxRS OC1RS
-#  define OCxCON OC1CON
-#endif
-#if AUDIO_PIN == 10 //11 for uno, 10 for mega
-=======
 #if AUDIO_PIN == 9
 #  define OCxRS OC1RS
 #  define OCxCON OC1CON
 #endif
 #if AUDIO_PIN == 10
->>>>>>> Stashed changes
-=======
-#if AUDIO_PIN == 3
-#  define OCxRS OC1RS
-#  define OCxCON OC1CON
-#endif
-#if AUDIO_PIN == 11
->>>>>>> parent of 31f9a20 (Transition to Mega)
 #  error Oops! The Uno32 cannot do PWM on pin 11
 #endif
 

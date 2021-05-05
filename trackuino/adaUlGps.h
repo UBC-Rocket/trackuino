@@ -10,8 +10,10 @@
 #ifndef adaUlGps_h
 #define adaUlGps_h
 
-void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLength, int *altitudeMeasurement);
+void adaUlRecievePosition(unsigned long *timer, char [], int bufferLength, int *altitudeMeasurement);
 void setupAdaUlGps(void);
-void formatGpsDataAPRS(char gpsString[], int gpsBuffer, int *altitudeMeasurement);
+void adaUlGpsPrintString(void);
+void adaUlAprsFormat(void);
+void formatGpsDataAPRS(char [], int gpsBuffer, int *altitudeMeasurement);
 
 #endif adaUlGps_h
