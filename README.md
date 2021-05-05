@@ -1,9 +1,10 @@
 This is a fork of the trackuino library with changes made to suit the Aerostat subteam. Most importantly:
-* [Not started] The Venus GPS used in the original trackuino has been replaced with an Adafruit Ultimate GPS. This means the removal of code related to the Venus and the addition of code to use the Adafruit library.
-* [Not started] Addition of code to support the wind sensor and barometer
-* [Not started] Removal of code for unusued sensors in the trackuino library
-* [Not started] Modification of APRS packet structure
-* Potentially more...
+* [Complete] The Venus GPS used in the original trackuino has been replaced with an Adafruit Ultimate GPS. This means the removal of code related to the Venus and the addition of code to use the Adafruit library.
+* [In Progress] Addition of code to support the wind sensor and barometer
+* [Complete] Removal of code for unusued sensors in the trackuino library
+* [Complete] Modification of APRS packet structure
+* [Not Started] Add SD Card Support
+* [In Progress] Data Compression
 
 
 
