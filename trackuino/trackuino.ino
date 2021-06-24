@@ -52,11 +52,13 @@
 #include "sensors_avr.h"
 #include "sensors_pic32.h"
 
+
 //Aerostat-specific
 #include "aerostat_utils.h"
 #include "windSensor.h"
 #include "barometer.h"
 #include "adaUlGps.h"
+#include "sdlogging.h"
 
 // Arduino/AVR libs
 #if (ARDUINO + 1) >= 100
@@ -93,6 +95,7 @@ void setup()
   afsk_setup();
   setupBarometer();
   setupAdaUlGps();
+  setupSd();
 
 
 #ifdef DEBUG_SENS
@@ -149,6 +152,7 @@ void loop()
   // Time for another APRS frame
   if ((millis() - aprs_timer) >= APRS_PERIOD) {
     aprs_send(gpsString, altitudeValues, velocityValues);
+    logData(gpsString, altitudeValues, velocityValues);
     measurementIndex = 0;
 
     aprs_timer = millis();

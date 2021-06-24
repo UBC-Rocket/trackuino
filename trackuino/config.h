@@ -40,7 +40,7 @@
 // - Home:       0
 // - IGate:      5
 #define S_CALLSIGN      "VE7BVU"
-#define S_CALLSIGN_ID   11
+#define S_CALLSIGN_ID   1 //11 for balloon, 1 through 5 for "extra" anything
 
 // Destination callsign: APRS (with SSID=0) is usually okay.
 #define D_CALLSIGN      "APRS"
@@ -50,8 +50,15 @@
 // (read more about digipeating paths here: http://wa8lmf.net/DigiPaths/ )
 // The recommended digi path for a balloon is WIDE2-1 or pathless. The default
 // is pathless. Uncomment the following two lines for WIDE2-1 path:
-#define DIGI_PATH1      "WIDE2"
+
+// FOR TESTING PURPOSES IN URBAN AREAS ONLY, PUT WIDE1-1
+
+#define DIGI_PATH1      "WIDE1"
 #define DIGI_PATH1_TTL  1
+
+// FOR TESTING PURPOSES IN URBAN AREAS ONLY, DEFINE A 2ND PATH, WIDE2-1
+#define DIGI_PATH2 "WIDE2"
+#define DIGI_PATH2_TTL 1
 
 // APRS comment: this goes in the comment portion of the APRS message. You
 // might want to keep this short. The longer the packet, the more vulnerable
@@ -98,7 +105,7 @@
 // PWM, so the only two options are pins 3 and 11.
 // Pin 11 doubles as MOSI, so I suggest using pin 3 for PWM and leave 11 free
 // in case you ever want to interface with an SPI device.
-#define AUDIO_PIN       9
+#define AUDIO_PIN       9 //9 for Mega
 
 // Pre-emphasize the 2200 tone by 6 dB. This is actually done by 
 // de-emphasizing the 1200 tone by 6 dB and it might greatly improve
@@ -267,7 +274,23 @@ when reading an analog value, it measures it against 5V and not 3.3V.*/
 //* TMP          A2
 
 #define WIND_OUTPUT_PIN         A0
-#define WIND_TEMP_PIN           A2
+#define WIND_TEMP_PIN           A5
+
+
+// --------------------------------------------------------------------------
+// SD Card Config
+// --------------------------------------------------------------------------
+
+// * SD CARD HOOKUP [MEGA]
+// * - Chip select pin: D10[50]
+// * - MOSI Pin:        D11[51]
+// * - MISO Pin:        D12[52]
+// * - SCK pin:         D13[53]
+
+#define SD_SELECT_PIN 53
+#define SD_MOSI_PIN 51
+#define SD_MISO_PIN 50
+#define SD_CLOCK_PIN 52
 
 
 // --------------------------------------------------------------------------

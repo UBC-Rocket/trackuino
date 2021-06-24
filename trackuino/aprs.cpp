@@ -54,10 +54,11 @@ void aprs_send(char gpsString[], int altitudeValues[], int velocityValues[])
   ax25_send_header(addresses, sizeof(addresses)/sizeof(s_address));
   ax25_send_byte('/');                // Symbol table to seperate different strings while printed
   ax25_send_string(gpsString);        // contains GPS time, longitude, long dir, latitude, lat dir
-  ax25_send_byte('O');                // balloon type identifier is 'O'
+  ax25_send_byte('b');                // balloon type identifier is 'O', 'b' for bicycle
 
   Serial.print(gpsString);
-  Serial.print('O');
+  Serial.print('b');                  //'O' for balloon, 'b' for bicycle
+
 
   for (int i = 0; i < MEASUREMENTS_PER_PERIOD; i++)
       {

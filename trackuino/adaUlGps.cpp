@@ -69,7 +69,7 @@ void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLeng
 
 void formatGpsDataAPRS(char gpsString[], int bufferLength, int *altitudeMeasurement) {
 
-    const char formatString[] = "%02d%02d%02dh%07s%c%08s%c";
+    const char formatString[] = "%02d%02d%02dh%07s%c/%08s%c";
     //hhmmss[h][latitude][N][longitude][S]
     
     char gpsLatitude[8] = "0000.00";
