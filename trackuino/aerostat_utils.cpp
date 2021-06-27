@@ -41,3 +41,97 @@ void charPadString(char str[], char replacer, char special, int mode)
     }
   }
 }
+
+/*
+ * Converts a number between 0 and 91 to a number in base91
+*/
+char intToBase91(int num)
+{
+    return (char)(num + 33);
+}
+
+/*
+ * Converts a distance in meters to a distance in feet.
+*/
+int metersToFeet(int num)
+{
+    return (int)((float)num*3.2808399);
+}
+
+/*
+ * Converts a speed from km/h to knots (to abide by APRS Base91 conventions)
+*/
+float kilomToKnots(float num)
+{
+
+    return num*0.539956803;
+}
+
+
+/*
+ * Takes a latitude or longitude value in [degrees].[minutes][decimal minutes] format and converts to [degrees].[decimal degrees]
+*/
+float minToDd(float num)
+{
+    float decimalPart = num - floor(num);
+    return floor(num) + decimalPart*10/6; //60 minutes becomes 1 degree (in decimal degrees)
+}
+
+
+/*
+ * Compresses a latitude value down to a 4-character number in base91
+ * The latitude should have a sign (negative for south).
+*/
+void compressLat(double latitude, char compressedChars[4])
+{
+    int base91 = (int)(380926.0*(90.0 - latitude));
+                    
+    for (int i = 0; i < 3; i++)                       // Divide base91 by 91^n repeatedly, starting from n=3 and ending at n=1.
+    {
+      compressedChars[i] = intToBase91(base91/(pow(91, 3-i)));
+      base91 = base91 % (int)pow(91, 3-i);
+    }
+    
+    compressedChars[3] = intToBase91(base91);                         //last value is the final remainder. 
+    
+}
+
+/*
+ * Compresses a longitude value down to a 4-character number in base91
+*/
+void compressLong(double longitude, char compressedChars[4])
+{
+    int base91 = (int)(190463 * (180 + longitude));
+                    
+    for (int i = 0; i < 3; i++)                       // Divide base91 by 91^n repeatedly, starting from n=3 and ending at n=1.
+    {
+      compressedChars[i] = intToBase91(base91/(pow(91, 3-i)));
+      base91 = base91 % (int)round(pow(91, 3-i));
+    }
+    
+    compressedChars[3] = intToBase91(base91);                         //last value is the final remainder. 
+    
+}
+
+/*
+ * Compresses an integer for altitude down to a 2-character number in base91
+ * Altitude should be in feet
+*/
+void compressAlt(int altitude, char compressedChars[2])
+{
+    int base91 = (int)round((log(altitude)/log(1.002))); //1.002 logarithm of altitude; intentional.
+    compressedChars[0] = intToBase91(base91 / 91);
+    compressedChars[1] = intToBase91(base91 % 91);
+    
+}
+
+/*
+ * Compresses an integer for wind speed dow nto a 1-character number in base91
+*/
+void compressWind(int windSpeed, char compressedChars[2])
+{
+    // need to accomodate 2 characters, or find a way to fit more km/h into a single character.
+    int base91 = (int)round((log(windSpeed + 1)/log(1.08))); //1.08 logarithm of (wind speed + 1)
+    compressedChars[0] = intToBase91(base91 / 91);
+    compressedChars[1] = intToBase91(base91 % 91);
+}

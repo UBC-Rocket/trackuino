@@ -208,7 +208,8 @@
 // Defines the array length for a velocity array
 // Defines the array length for a altitude array
 
-#define MEASUREMENTS_PER_PERIOD 3
+#define SENS_MEASUREMENTS_PER_PERIOD 4
+#define GPS_MEASUREMENTS_PER_PERIOD 4
 
 
 // --------------------------------------------------------------------------

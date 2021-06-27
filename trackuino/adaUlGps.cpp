@@ -45,25 +45,66 @@ void setupAdaUlGps(void)
 }
 
 
-void adaUlRecievePosition(unsigned long *timer, char gpsString[], int bufferLength, int *altitudeMeasurement)
+void adaUlRecievePosition(double *latMeasurement, double *longMeasurement, int *altitudeMeasurement, int *gpsTime)
 {
-  char c = GPS.read();
-  // if you want to debug, this is a good time to do it!
-  /*if ((c) && (GPSECHO))
-    Serial.write(c);*/
+    char c = GPS.read();
+    // if you want to debug, this is a good time to do it!
+    /*if ((c) && (GPSECHO))
+      Serial.write(c);*/
+  
+    // if a sentence is received, we can check the checksum, parse it...
+    if (GPS.newNMEAreceived()) {
+      // a tricky thing here is if we print the NMEA sentence, or data
+      // we end up not listening and catching other sentences!
+      // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
+      //Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
+  
+      if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
+        return;  // we can fail to parse a sentence in which case we should just wait for another
+    }
+  
+    *gpsTime = GPS.hour*10000 + GPS.minute*100 + GPS.seconds;
+    
+    if(GPS.fix)
+    {
+        if (GPS.lat == 'S')
+          {
+              *latMeasurement = -1*GPS.latitude;
+          }
+          else
+          {
+              *latMeasurement = GPS.latitude;
+          }
+        
+          if (GPS.lon == 'W')
+          {
+              *longMeasurement = -1*GPS.longitude;
+          }
+          else
+          {
+              *longMeasurement = GPS.longitude;
+          }
+  
+          if (GPS.altitude < 0)
+          {
+            *altitudeMeasurement = 0;
+          }
+          else
+          {
+            *altitudeMeasurement = (int)GPS.altitude;
+          }
+    }
+    else
+    {
+        *latMeasurement = 0.0;
+        *longMeasurement = 0.0;
+        *altitudeMeasurement = 0;
+}
+  
 
-  // if a sentence is received, we can check the checksum, parse it...
-  if (GPS.newNMEAreceived()) {
-    // a tricky thing here is if we print the NMEA sentence, or data
-    // we end up not listening and catching other sentences!
-    // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
-    //Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
-
-    if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
-      return;  // we can fail to parse a sentence in which case we should just wait for another
-  }
-
-  formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement);
+  
+  
+  //formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement);
 }
 
 

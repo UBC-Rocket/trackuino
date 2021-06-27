@@ -72,13 +72,17 @@
 static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 
 // Module variables
-static unsigned long int measure_timer = 0;
-static unsigned long int aprs_timer = 0; // Defined around line 107
+static unsigned long int aprs_timer = 0; // Defined around line 117
+static unsigned long int sens_measure_timer = 0;
+static unsigned long int gps_measure_timer = 0; 
 
 // Variables for storing multiple measurements per measurement period.
-int velocityValues[MEASUREMENTS_PER_PERIOD];
-int altitudeValues[MEASUREMENTS_PER_PERIOD];
-int measurementIndex= 0; //which index of altitude and velocity arrays to fill
+double velocityValues[SENS_MEASUREMENTS_PER_PERIOD];
+int altitudeValues[SENS_MEASUREMENTS_PER_PERIOD];
+double latitudeValues[GPS_MEASUREMENTS_PER_PERIOD];
+double longitudeValues[GPS_MEASUREMENTS_PER_PERIOD];
+int sensMeasurementIndex= 0; //which index of arrays to fill
+int gpsMeasurementIndex = 0;
 
 
 void setup()
@@ -111,7 +115,8 @@ void setup()
   // for slotted transmissions.
   
   aprs_timer = millis();
-  measure_timer = millis(); 
+  sens_measure_timer = millis(); 
+  gps_measure_timer = millis();
   
   if (APRS_SLOT >= 0) {
 //    do {
@@ -131,29 +136,41 @@ void setup()
 
 void loop()
 {
-   char gpsString[50];
-   int altMeasurement;
-   adaUlRecievePosition(&measure_timer, gpsString, 49, &altMeasurement);
+   double latMeasurement, longMeasurement;
+   int altMeasurement, velocityMeasurement, gpsTime;
+   adaUlRecievePosition(&latMeasurement, &longMeasurement, &altMeasurement, &gpsTime);
 
   // Time for another measurement
-  if ((millis() - measure_timer) >= (APRS_PERIOD/MEASUREMENTS_PER_PERIOD))
+  if ((millis() - sens_measure_timer) >= (APRS_PERIOD/SENS_MEASUREMENTS_PER_PERIOD))
   {
     //add another wind speed measurement to velocityValues, and altitude measurement to velocityValues
-    velocityValues[measurementIndex] = (int)measureRevpWind();
-    altitudeValues[measurementIndex] = altMeasurement;
+    velocityValues[sensMeasurementIndex] = measureRevpWind();
+    altitudeValues[sensMeasurementIndex] = altMeasurement;
    
-    measurementIndex++; 
+    sensMeasurementIndex++; 
 
-    measure_timer = millis();
-    Serial.println("Measured");
+    sens_measure_timer = millis();
+    Serial.println("Measured sens");
+  }
+
+  if ((millis() - gps_measure_timer) >= (APRS_PERIOD/GPS_MEASUREMENTS_PER_PERIOD))
+  {
+    latitudeValues[gpsMeasurementIndex] = latMeasurement;
+    longitudeValues[gpsMeasurementIndex] = longMeasurement;
+   
+    gpsMeasurementIndex++; 
+
+    gps_measure_timer = millis();
+    Serial.println("Measured GPS");
   }
 
   
   // Time for another APRS frame
   if ((millis() - aprs_timer) >= APRS_PERIOD) {
-    aprs_send(gpsString, altitudeValues, velocityValues);
-    logData(gpsString, altitudeValues, velocityValues);
-    measurementIndex = 0;
+    aprs_send(latitudeValues, longitudeValues, altitudeValues, velocityValues, gpsTime);
+    //logData(gpsString, altitudeValues, velocityValues);
+    sensMeasurementIndex = 0;
+    gpsMeasurementIndex = 0;
 
     aprs_timer = millis();
     while (afsk_flush()) {

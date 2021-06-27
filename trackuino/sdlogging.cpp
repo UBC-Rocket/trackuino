@@ -46,7 +46,7 @@ void logData(char gpsString[], int altitudeValues[], int velocityValues[])
       logFile.print(gpsString);
       logFile.print(',');
 
-      for (int i = 0; i < MEASUREMENTS_PER_PERIOD; i++)
+      for (int i = 0; i < SENS_MEASUREMENTS_PER_PERIOD; i++)
       {
 
           char altDP[6] = "00000";

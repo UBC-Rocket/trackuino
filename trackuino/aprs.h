@@ -18,6 +18,7 @@
 #ifndef __APRS_H__
 #define __APRS_H__
 
-void aprs_send(char gpsString[], int altitudeValues[], int velocityValues[]);
+void aprs_send(double latitudeValues[], double longitudeValues[], int altitudeValues[], double velocityValues[], int gpsTime);
+
 
 #endif

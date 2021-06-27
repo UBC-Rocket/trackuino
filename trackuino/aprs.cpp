@@ -37,9 +37,13 @@ float meters_to_feet(float m)
 }
 
 // Exported functions
-void aprs_send(char gpsString[], int altitudeValues[], int velocityValues[])
+void aprs_send(double latitudeValues[], double longitudeValues[], int altitudeValues[], double velocityValues[], int gpsTime)
 {
-  char temp[12];                   // Temperature (int/ext)
+  char gpsTimeString[7];  
+  char latString[5];
+  char longString[5];
+  char altString[3];
+  char velocityString[3];
   const struct s_address addresses[] = { 
     {D_CALLSIGN, D_CALLSIGN_ID},  // Destination callsign
     {S_CALLSIGN, S_CALLSIGN_ID},  // Source callsign (-11 = balloon, -9 = car)
@@ -53,34 +57,51 @@ void aprs_send(char gpsString[], int altitudeValues[], int velocityValues[])
 
   ax25_send_header(addresses, sizeof(addresses)/sizeof(s_address));
   ax25_send_byte('/');                // Symbol table to seperate different strings while printed
-  ax25_send_string(gpsString);        // contains GPS time, longitude, long dir, latitude, lat dir
-  ax25_send_byte('b');                // balloon type identifier is 'O', 'b' for bicycle
 
-  Serial.print(gpsString);
+  dtostrf(gpsTime, 7, 0, gpsTimeString);
+  charPadString(gpsTimeString, '0', ' ', 1);
+  ax25_send_string(gpsTimeString);
+  ax25_send_byte('h');
+  
+  ax25_send_byte('/'); //Change this?
+  
+  compressLat(latitudeValues[GPS_MEASUREMENTS_PER_PERIOD - 1], latString);
+  compressLong(longitudeValues[GPS_MEASUREMENTS_PER_PERIOD - 1], longString);
+  ax25_send_string(latString);
+  ax25_send_string(longString);
+
+  ax25_send_byte('b');                // balloon type identifier is 'O', 'b' for bicycle
+  compressAlt(metersToFeet(altitudeValues[SENS_MEASUREMENTS_PER_PERIOD - 1]), altString); //Convert latest alt. to feet, then compress.
+  ax25_send_string(altString);
   Serial.print('b');                  //'O' for balloon, 'b' for bicycle
 
-
-  for (int i = 0; i < MEASUREMENTS_PER_PERIOD; i++)
-      {
-
-        char altDP[6] = "00000";
-        dtostrf(altitudeValues[i], 5, 0, altDP); //00000
-        charPadString(altDP, '0', ' ', 1);
-        
-        char windDP[4] = "000";
-        formatWindDataString(windDP, velocityValues[i]);
-        charPadString(windDP, '0', ' ', 1);
-
-        ax25_send_byte('a');
-        ax25_send_string(altDP);
-        ax25_send_byte('v');
-        ax25_send_string(windDP);
-
-        Serial.print('a');
-        Serial.print(altDP);
-        Serial.print('v');
-        Serial.print(windDP);
-      }
+  
+  ax25_send_byte('S'); //Tells APRS-IS about the source of compression, of gps data, etc. 
+  // Important because two of the binary digits that make up the S tell APRS-IS that the preceding two characters are for altitude. 
+  
+  for (int i = 0; i < (GPS_MEASUREMENTS_PER_PERIOD - 2); i++) //minus two because the latest GPS position has already been transmitted.
+  {
+      compressLat(latitudeValues[i], latString);
+      compressLong(longitudeValues[i], longString);
+      ax25_send_string(latString);
+      ax25_send_string(longString);
+      Serial.print(latString);
+      Serial.print(longString);
+  }
+  
+  for (int i = 0; i < (SENS_MEASUREMENTS_PER_PERIOD - 2); i++)
+  {
+      compressAlt(metersToFeet(altitudeValues[i]), altString); //Convert latest alt. to feet, then compress.
+      compressWind(kilomToKnots(velocityValues[i]), velocityString);
+      ax25_send_string(altString);
+      ax25_send_string(velocityString);
+      Serial.print(altString);
+      Serial.print(velocityString);
+  }
+  
+  //The last wind speed datapoint, which hasnt been transmitted yet.
+  compressWind(kilomToKnots(velocityValues[SENS_MEASUREMENTS_PER_PERIOD - 1]), velocityString);
+  ax25_send_string(velocityString);
   
   ax25_send_string(APRS_COMMENT);     // Comment    
   ax25_send_footer();
