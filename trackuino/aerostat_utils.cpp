@@ -131,7 +131,9 @@ void compressAlt(int altitude, char compressedChars[2])
 void compressWind(int windSpeed, char compressedChars[2])
 {
     // need to accomodate 2 characters, or find a way to fit more km/h into a single character.
+    // NO WE DON'T; 1 character is enough for 1100 knots to 3% accuracy, which is more than enough. Reverted change.
     int base91 = (int)round((log(windSpeed + 1)/log(1.08))); //1.08 logarithm of (wind speed + 1)
-    compressedChars[0] = intToBase91(base91 / 91);
-    compressedChars[1] = intToBase91(base91 % 91);
+    //compressedChars[0] = intToBase91(base91 / 91);
+    //compressedChars[1] = intToBase91(base91 % 91);
+    compressedChars[0] = intToBase91(base91 % 91);
 }
