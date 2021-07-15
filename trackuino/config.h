@@ -90,7 +90,7 @@
 // 00:02:00, etc. and the second balloon will transmit at 00:00:30, 00:01:30,
 // 00:02:30, etc.
 #define APRS_SLOT     -1     // seconds. -1 disables slotted transmissions
-#define APRS_PERIOD   60000    // milliseconds
+#define APRS_PERIOD   20000    // milliseconds
 
 // GPS baud rate (in bits per second). This is also the baud rate at which
 // debug data will be printed out the serial port.
@@ -118,7 +118,7 @@
 // --------------------------------------------------------------------------
 
 // This is the PTT pin
-#define PTT_PIN           4
+#define PTT_PIN           10
 
 // --------------------------------------------------------------------------
 // Sensors config (sensors.cpp) NOT USED
@@ -205,9 +205,6 @@
 // General Aerostat Config
 // --------------------------------------------------------------------------
 
-// Defines the array length for a velocity array
-// Defines the array length for a altitude array
-
 #define SENS_MEASUREMENTS_PER_PERIOD 4
 #define GPS_MEASUREMENTS_PER_PERIOD 4
 
@@ -215,11 +212,6 @@
 // --------------------------------------------------------------------------
 // Adafruit GPS config (adaUlGps.cpp) 
 // --------------------------------------------------------------------------
-
-// Connect the GPS TX (transmit) pin to digital ADAULGPS_TX_PIN
-#define ADAULGPS_TX_PIN           8
-// Connect the GPS RX (receive) pin to digital ADAULGPS_RX_PIN
-#define ADAULGPS_RX_PIN           7
 
 // Not needed
 // #define GPSECHO                   true
@@ -236,7 +228,7 @@
 // *    Pin 4: GND
 
 // Barometer pin
-#define BAROMETER_PIN A5
+#define BAROMETER_PIN A2
 
 //need to add value and comment
 // #define INPUT
@@ -274,8 +266,8 @@ when reading an analog value, it measures it against 5V and not 3.3V.*/
 //* Out          A0
 //* TMP          A2
 
-#define WIND_OUTPUT_PIN         A0
-#define WIND_TEMP_PIN           A5
+#define WIND_OUTPUT_PIN         A3
+#define WIND_TEMP_PIN           A4
 
 
 // --------------------------------------------------------------------------

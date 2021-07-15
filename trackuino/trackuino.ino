@@ -138,7 +138,8 @@ void loop()
 {
    double latMeasurement, longMeasurement;
    int altMeasurement, velocityMeasurement, gpsTime;
-   adaUlRecievePosition(&latMeasurement, &longMeasurement, &altMeasurement, &gpsTime);
+   char gpsTimeString[7];
+   adaUlRecievePosition(&latMeasurement, &longMeasurement, &altMeasurement, gpsTimeString);
 
   // Time for another measurement
   if ((millis() - sens_measure_timer) >= (APRS_PERIOD/SENS_MEASUREMENTS_PER_PERIOD))
@@ -162,12 +163,17 @@ void loop()
 
     gps_measure_timer = millis();
     Serial.println("Measured GPS");
+    //Serial.println(gpsTimeString);
+    Serial.println(latMeasurement);
+    Serial.println(minToDd(latMeasurement));
+    Serial.println(longMeasurement);
+    Serial.println(minToDd(longMeasurement));
   }
 
   
   // Time for another APRS frame
   if ((millis() - aprs_timer) >= APRS_PERIOD) {
-    aprs_send(latitudeValues, longitudeValues, altitudeValues, velocityValues, gpsTime);
+    aprs_send(latitudeValues, longitudeValues, altitudeValues, velocityValues, gpsTimeString);
     //logData(gpsString, altitudeValues, velocityValues);
     sensMeasurementIndex = 0;
     gpsMeasurementIndex = 0;

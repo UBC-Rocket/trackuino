@@ -69,12 +69,22 @@ float kilomToKnots(float num)
 
 
 /*
- * Takes a latitude or longitude value in [degrees].[minutes][decimal minutes] format and converts to [degrees].[decimal degrees]
+ * Takes a latitude or longitude value in [degrees][minutes].[decimal minutes] format and converts to [degrees].[decimal degrees]
 */
 float minToDd(float num)
 {
-    float decimalPart = num - floor(num);
-    return floor(num) + decimalPart*10/6; //60 minutes becomes 1 degree (in decimal degrees)
+    int sign = 1;
+    float x = abs(num);
+
+    if (num < 0)
+    {
+      sign = -1;
+    }
+    
+    float degreesPart = floor(x/100);
+    float minutesPart = 0.01*floor(100*(x/100 - degreesPart));
+    float decimalMinutesPart = 0.01*(100*(x/100 - degreesPart) - minutesPart);
+    return sign*(degreesPart + 10/6*minutesPart + decimalMinutesPart);
 }
 
 
@@ -82,34 +92,37 @@ float minToDd(float num)
  * Compresses a latitude value down to a 4-character number in base91
  * The latitude should have a sign (negative for south).
 */
-void compressLat(double latitude, char compressedChars[4])
+void compressLat(double latitude, char compressedChars[5])
 {
-    int base91 = (int)(380926.0*(90.0 - latitude));
+    long base91 = 380926.0*(90.0 - latitude);
                     
     for (int i = 0; i < 3; i++)                       // Divide base91 by 91^n repeatedly, starting from n=3 and ending at n=1.
     {
-      compressedChars[i] = intToBase91(base91/(pow(91, 3-i)));
-      base91 = base91 % (int)pow(91, 3-i);
+
+      compressedChars[i] = intToBase91((int)floor(base91/pow(91, 3-i)));
+      base91 = base91 % (long)pow(91, 3-i);
     }
     
-    compressedChars[3] = intToBase91(base91);                         //last value is the final remainder. 
+    compressedChars[3] = intToBase91(base91);                         //last value is the final remainder.
+    compressedChars[4] = '\0'; 
     
 }
 
 /*
  * Compresses a longitude value down to a 4-character number in base91
 */
-void compressLong(double longitude, char compressedChars[4])
+void compressLong(double longitude, char compressedChars[5])
 {
-    int base91 = (int)(190463 * (180 + longitude));
+    long base91 = 190463 * (180 + longitude);
                     
     for (int i = 0; i < 3; i++)                       // Divide base91 by 91^n repeatedly, starting from n=3 and ending at n=1.
     {
-      compressedChars[i] = intToBase91(base91/(pow(91, 3-i)));
-      base91 = base91 % (int)round(pow(91, 3-i));
+      compressedChars[i] = intToBase91((int)floor(base91/pow(91, 3-i)));
+      base91 = base91 % (long)pow(91, 3-i);
     }
     
-    compressedChars[3] = intToBase91(base91);                         //last value is the final remainder. 
+    compressedChars[3] = intToBase91(base91);                         //last value is the final remainder.
+    compressedChars[4] = '\0';  
     
 }
 
@@ -117,11 +130,12 @@ void compressLong(double longitude, char compressedChars[4])
  * Compresses an integer for altitude down to a 2-character number in base91
  * Altitude should be in feet
 */
-void compressAlt(int altitude, char compressedChars[2])
+void compressAlt(int altitude, char compressedChars[3])
 {
-    int base91 = (int)round((log(altitude)/log(1.002))); //1.002 logarithm of altitude; intentional.
+    long base91 = (long)round((log(altitude)/log(1.002))); //1.002 logarithm of altitude; intentional.
     compressedChars[0] = intToBase91(base91 / 91);
     compressedChars[1] = intToBase91(base91 % 91);
+    compressedChars[2] = '\0'; 
     
 }
 
@@ -130,10 +144,8 @@ void compressAlt(int altitude, char compressedChars[2])
 */
 void compressWind(int windSpeed, char compressedChars[2])
 {
-    // need to accomodate 2 characters, or find a way to fit more km/h into a single character.
-    // NO WE DON'T; 1 character is enough for 1100 knots to 3% accuracy, which is more than enough. Reverted change.
+
     int base91 = (int)round((log(windSpeed + 1)/log(1.08))); //1.08 logarithm of (wind speed + 1)
-    //compressedChars[0] = intToBase91(base91 / 91);
-    //compressedChars[1] = intToBase91(base91 % 91);
     compressedChars[0] = intToBase91(base91 % 91);
+    compressedChars[1] = '\0';
 }

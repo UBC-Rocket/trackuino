@@ -12,13 +12,13 @@
 void charPadString(char str[], char replacer, char special, int mode);
 
 char intToBase91(int num);
-float metersToFeet(float num);
+int metersToFeet(int num);
 float kilomToKnots(float num);
 float minToDd(float num);
 
-void compressLat(double latitude, char compressedChars[4]);
-void compressLong(double longitude, char compressedChars[4]);
-void compressAlt(int altitude, char compressedChars[2]);
-void compressWind(int windSpeed, char compressedChars[2]);
+void compressLat(double latitude, char compressedChars[5]);
+void compressLong(double longitude, char compressedChars[5]);
+void compressAlt(int altitude, char compressedChars[3]);
+void compressWind(int windSpeed, char compressedChars[3]);
 
 #endif aerostat_utils_h

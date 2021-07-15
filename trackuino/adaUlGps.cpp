@@ -45,7 +45,7 @@ void setupAdaUlGps(void)
 }
 
 
-void adaUlRecievePosition(double *latMeasurement, double *longMeasurement, int *altitudeMeasurement, int *gpsTime)
+void adaUlRecievePosition(double *latMeasurement, double *longMeasurement, int *altitudeMeasurement, char gpsTimeString[7])
 {
     char c = GPS.read();
     // if you want to debug, this is a good time to do it!
@@ -63,48 +63,44 @@ void adaUlRecievePosition(double *latMeasurement, double *longMeasurement, int *
         return;  // we can fail to parse a sentence in which case we should just wait for another
     }
   
-    *gpsTime = GPS.hour*10000 + GPS.minute*100 + GPS.seconds;
+    //*gpsTime = GPS.hour*10000 + GPS.minute*100 + GPS.seconds;
+    snprintf(gpsTimeString, 7, "%02d%02d%02d", GPS.hour, GPS.minute, GPS.seconds);
     
     if(GPS.fix)
     {
         if (GPS.lat == 'S')
-          {
-              *latMeasurement = -1*GPS.latitude;
-          }
-          else
-          {
-              *latMeasurement = GPS.latitude;
-          }
-        
-          if (GPS.lon == 'W')
-          {
-              *longMeasurement = -1*GPS.longitude;
-          }
-          else
-          {
-              *longMeasurement = GPS.longitude;
-          }
-  
-          if (GPS.altitude < 0)
-          {
-            *altitudeMeasurement = 0;
-          }
-          else
-          {
-            *altitudeMeasurement = (int)GPS.altitude;
-          }
+        {
+            *latMeasurement = -1*GPS.latitude;
+        }
+        else
+        {
+            *latMeasurement = GPS.latitude;
+        }
+      
+        if (GPS.lon == 'W')
+        {
+            *longMeasurement = -1*GPS.longitude;
+        }
+        else
+        {
+            *longMeasurement = GPS.longitude;
+        }
+
+        if (GPS.altitude < 0)
+        {
+          *altitudeMeasurement = 0;
+        }
+        else
+        {
+          *altitudeMeasurement = (int)GPS.altitude;
+        }
     }
     else
     {
         *latMeasurement = 0.0;
         *longMeasurement = 0.0;
         *altitudeMeasurement = 0;
-}
-  
-
-  
-  
-  //formatGpsDataAPRS(gpsString, bufferLength, altitudeMeasurement);
+    } 
 }
 
 
