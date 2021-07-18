@@ -80,11 +80,16 @@ float minToDd(float num)
     {
       sign = -1;
     }
-    
-    float degreesPart = floor(x/100);
-    float minutesPart = 0.01*floor(100*(x/100 - degreesPart));
-    float decimalMinutesPart = 0.01*(100*(x/100 - degreesPart) - minutesPart);
-    return sign*(degreesPart + 10/6*minutesPart + decimalMinutesPart);
+
+    x /= 100.0; // from 4910.82 to 49.1082
+    float degreesPart = floor(x);
+    float minutesPart = x - degreesPart;
+//    x = 100*(x - degreesPart); //from 49.1082 to 10.82
+//    float minutesPart = 0.01*floor(x);
+//    x = 100*(x - minutesPart); // from 10.82 to 82.xxx
+//    float decimalMinutesPart = 0.0001*x;
+//    return sign*(degreesPart + 10/6*minutesPart + decimalMinutesPart);
+    return sign*(degreesPart + minutesPart/0.60);
 }
 
 
