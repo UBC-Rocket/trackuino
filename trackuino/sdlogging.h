@@ -14,6 +14,7 @@
 void setupSd();
 void sdWriteLine(char logBuffer[100]);
 void logData(char gpsString[], int altitudeValues[], int velocityValues[]);
+void logDataNew(char gpsTime[7], double lat, double lon, int gpsAlt, double sensPressure, double sensTemp, int wind);
 
 
 #endif sdlogging_h

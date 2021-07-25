@@ -76,7 +76,7 @@ void aprs_send(double latitudeValues[], double longitudeValues[], int altitudeVa
   Serial.print(latString);
   Serial.print(longString);
 
-  ax25_send_byte('b');                // balloon type identifier is 'O', 'b' for bicycle
+  ax25_send_byte('b');                // balloon type identifier is 'O', 'b' for bicycle, '>' for car
   compressAlt(metersToFeet(altitudeValues[SENS_MEASUREMENTS_PER_PERIOD - 1]), altString); //Convert latest alt. to feet, then compress.
   ax25_send_string(altString);
   Serial.print(altString);
@@ -110,6 +110,9 @@ void aprs_send(double latitudeValues[], double longitudeValues[], int altitudeVa
   //The last wind speed datapoint, which hasnt been transmitted yet.
   compressWind(kilomToKnots(velocityValues[SENS_MEASUREMENTS_PER_PERIOD - 1]), velocityString);
   ax25_send_string(velocityString);
+  
+//  ax25_send_string("_Short test, sry for 20s msg frequency");
+//  Serial.print("_Short test, sry for 20s msg frequency");
   
   ax25_send_string(APRS_COMMENT);     // Comment    
   ax25_send_footer();

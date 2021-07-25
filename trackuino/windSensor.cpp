@@ -38,7 +38,7 @@ void formatWindDataString(char windDP[], double measurement)
 /*Returns temperature measurement in deg. Celsius from Rev P wind Sensor.*/
 float measureRevpTemp()
 {
-  // temp routine and print raw and temp C
+  // temperature routine and print raw and temp C
   int tempRawAD = analogRead(WIND_TEMP_PIN);  
   // Serial.print("RT ");    // print raw A/D for debug
   // Serial.print(tempRawAD);

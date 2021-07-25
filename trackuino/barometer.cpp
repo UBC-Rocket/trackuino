@@ -17,7 +17,7 @@ double measurePressure()
   double pressure = (barometerVoltage - BAROMETER_TRANS_FUN_MIN * BAROMETER_V_SUPPLY) * (BAROMETER_P_MAX - BAROMETER_P_MIN)/(0.8*BAROMETER_V_SUPPLY) + BAROMETER_P_MIN;
   //I put 0.8 here because the data sheet said to. Try to use TRANSFER_FUNCTION_MAX instead and see if it changes anything.
 
-  return pressure;
+  return pressure*100000; //In pascals
 }
 
 
@@ -25,4 +25,13 @@ void measurePressureString(char pressureDP[5])
 {
   dtostrf(measurePressure(), 4, 2, pressureDP);
   charPadString(pressureDP, '0', ' ', 1);
+}
+
+
+double calculateAltitudeSimple(double p)
+{
+    // Calculates altitude as a function of pressure, without taking lapse rate into account.
+    // See more here: https://en.wikipedia.org/wiki/Barometric_formula
+
+    return -1*8.3143*288.15/(0.02896*9.807)*log(p/101325);
 }

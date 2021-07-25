@@ -15,5 +15,6 @@
 void setupBarometer();
 double measurePressure();
 void measurePressureString(char pressureDP[5]);
+double calculateAltitudeSimple(double p);
 
 #endif barometer_h

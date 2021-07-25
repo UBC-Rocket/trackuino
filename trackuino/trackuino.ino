@@ -137,7 +137,7 @@ void setup()
 void loop()
 {
    double latMeasurement, longMeasurement;
-   int altMeasurement, velocityMeasurement, gpsTime;
+   int altMeasurement, velocityMeasurement;
    char gpsTimeString[7];
    adaUlRecievePosition(&latMeasurement, &longMeasurement, &altMeasurement, gpsTimeString);
 
@@ -147,9 +147,15 @@ void loop()
     //add another wind speed measurement to velocityValues, and altitude measurement to velocityValues
     velocityValues[sensMeasurementIndex] = measureRevpWind();
     altitudeValues[sensMeasurementIndex] = altMeasurement;
-   
     sensMeasurementIndex++; 
 
+    
+    /*For data logging*/
+    double sensPressure = measurePressure();
+    double sensTemp = measureRevpTemp();
+    logDataNew(gpsTimeString, latMeasurement, longMeasurement, altMeasurement, sensPressure, sensTemp, velocityMeasurement);
+
+    
     sens_measure_timer = millis();
     Serial.println("Measured sens");
   }
@@ -174,7 +180,6 @@ void loop()
   // Time for another APRS frame
   if ((millis() - aprs_timer) >= APRS_PERIOD) {
     aprs_send(latitudeValues, longitudeValues, altitudeValues, velocityValues, gpsTimeString);
-    //logData(gpsString, altitudeValues, velocityValues);
     sensMeasurementIndex = 0;
     gpsMeasurementIndex = 0;
 
