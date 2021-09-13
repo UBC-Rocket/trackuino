@@ -85,34 +85,42 @@ void aprs_send(double latitudeValues[], double longitudeValues[], int altitudeVa
   
   ax25_send_byte('S'); //Tells APRS-IS about the source of compression, of gps data, etc. 
   Serial.print('S');
-  // Important because two of the binary digits that make up the S tell APRS-IS that the preceding two characters are for altitude. 
-  
-  for (int i = 0; i < (GPS_MEASUREMENTS_PER_PERIOD - 1); i++) //minus two because the latest GPS position has already been transmitted.
-  {
-      compressLat(minToDd(latitudeValues[i]), latString);
-      compressLong(minToDd(longitudeValues[i]), longString);
-      ax25_send_string(latString);
-      ax25_send_string(longString);
-      Serial.print(latString);
-      Serial.print(longString);
-  }
-  
-  for (int i = 0; i < (SENS_MEASUREMENTS_PER_PERIOD - 1); i++)
-  {
-      compressAlt(metersToFeet(altitudeValues[i]), altString); //Convert latest alt. to feet, then compress.
-      compressWind(kilomToKnots(velocityValues[i]), velocityString);
-      ax25_send_string(altString);
-      ax25_send_string(velocityString);
-      Serial.print(altString);
-      Serial.print(velocityString);
-  }
-  
-  //The last wind speed datapoint, which hasnt been transmitted yet.
-  compressWind(kilomToKnots(velocityValues[SENS_MEASUREMENTS_PER_PERIOD - 1]), velocityString);
-  ax25_send_string(velocityString);
-  
-//  ax25_send_string("_Short test, sry for 20s msg frequency");
-//  Serial.print("_Short test, sry for 20s msg frequency");
+  // Important because two of the binary digits that make up the S tell APRS-IS that the preceding two characters are for altitude.
+
+  ax25_send_string("_Short test, sry for so many packets");
+    Serial.print("_Short test, sry for 20s msg frequency");
+
+//  if (check_testing_mode())
+//  {
+//      ax25_send_string("_Short test, sry for so many packets");
+//      Serial.print("_Short test, sry for 20s msg frequency");
+//  }
+//  else
+//  {
+//    for (int i = 0; i < (GPS_MEASUREMENTS_PER_PERIOD - 1); i++) //minus two because the latest GPS position has already been transmitted.
+//    {
+//        compressLat(minToDd(latitudeValues[i]), latString);
+//        compressLong(minToDd(longitudeValues[i]), longString);
+//        ax25_send_string(latString);
+//        ax25_send_string(longString);
+//        Serial.print(latString);
+//        Serial.print(longString);
+//    }
+//    
+//    for (int i = 0; i < (SENS_MEASUREMENTS_PER_PERIOD - 1); i++)
+//    {
+//        compressAlt(metersToFeet(altitudeValues[i]), altString); //Convert latest alt. to feet, then compress.
+//        compressWind(kilomToKnots(velocityValues[i]), velocityString);
+//        ax25_send_string(altString);
+//        ax25_send_string(velocityString);
+//        Serial.print(altString);
+//        Serial.print(velocityString);
+//    }
+//    
+//    //The last wind speed datapoint, which hasnt been transmitted yet.
+//    compressWind(kilomToKnots(velocityValues[SENS_MEASUREMENTS_PER_PERIOD - 1]), velocityString);
+//    ax25_send_string(velocityString);
+//  } 
   
   ax25_send_string(APRS_COMMENT);     // Comment    
   ax25_send_footer();

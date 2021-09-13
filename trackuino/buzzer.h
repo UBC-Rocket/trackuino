@@ -15,13 +15,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-/*
+
 #ifndef __BUZZER_H__
 #define __BUZZER_H__
 
 void buzzer_setup();
 void buzzer_on();
 void buzzer_off();
+void aerostat_buzzer_beep();
 
 #endif // ifndef __BUZZER_H__
-*/

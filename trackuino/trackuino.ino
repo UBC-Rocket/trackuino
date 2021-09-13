@@ -1,7 +1,7 @@
 /* trackuino copyright (C) 2010  EA5HAV Javi
- *  Edits by Peter Goubarev and Anqi Xu, for UBC Rocket; 2021
+ *  Edits by Pesoftwareter Goubarev and Anqi Xu, for UBC Rocket; 2021
  *
- * This program is free software; you can redistribute it and/or
+ * This program is free ; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -45,7 +45,6 @@
 #include "afsk_avr.h"
 #include "afsk_pic32.h"
 #include "aprs.h"
-#include "buzzer.h"
 #include "gps.h"
 #include "pin.h"
 #include "power.h"
@@ -74,7 +73,8 @@ static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 // Module variables
 static unsigned long int aprs_timer = 0; // Defined around line 117
 static unsigned long int sens_measure_timer = 0;
-static unsigned long int gps_measure_timer = 0; 
+static unsigned long int gps_measure_timer = 0;
+//static unsigned long int buzzer_timer = 0; 
 
 // Variables for storing multiple measurements per measurement period.
 double velocityValues[SENS_MEASUREMENTS_PER_PERIOD];
@@ -136,15 +136,16 @@ void setup()
 
 void loop()
 {
-   double latMeasurement, longMeasurement;
-   int altMeasurement, velocityMeasurement;
+   double latMeasurement, longMeasurement, velocityMeasurement;
+   int altMeasurement;
    char gpsTimeString[7];
    adaUlRecievePosition(&latMeasurement, &longMeasurement, &altMeasurement, gpsTimeString);
+
 
   // Time for another measurement
   if ((millis() - sens_measure_timer) >= (APRS_PERIOD/SENS_MEASUREMENTS_PER_PERIOD))
   {
-    //add another wind speed measurement to velocityValues, and altitude measurement to velocityValues
+    //add another wind speed measurement to velocityValues, a   adaUlRecievePosition(&latMeasurement, &longMeasurement, &altMeasurement, gpsTimeString);
     velocityValues[sensMeasurementIndex] = measureRevpWind();
     altitudeValues[sensMeasurementIndex] = altMeasurement;
     sensMeasurementIndex++; 
@@ -153,6 +154,7 @@ void loop()
     /*For data logging*/
     double sensPressure = measurePressure();
     double sensTemp = measureRevpTemp();
+    velocityMeasurement = measureRevpWind();
     logDataNew(gpsTimeString, latMeasurement, longMeasurement, altMeasurement, sensPressure, sensTemp, velocityMeasurement);
 
     
@@ -170,10 +172,6 @@ void loop()
     gps_measure_timer = millis();
     Serial.println("Measured GPS");
     //Serial.println(gpsTimeString);
-    Serial.println(latMeasurement);
-    Serial.println(minToDd(latMeasurement));
-    Serial.println(longMeasurement);
-    Serial.println(minToDd(longMeasurement));
   }
 
   
@@ -187,6 +185,13 @@ void loop()
     while (afsk_flush()) {
       power_save();
     }
+//
+//  if ((millis() - buzzer_timer) >= (BUZZER_OFF_TIME+BUZZER_ON_TIME))
+//  {
+//      // If "on time" is 2 s and "off time" is 2 s, we want the buzzer to be enabled every 4 s.
+//      aerostat_buzzer_beep();
+//      buzzer_timer = millis();
+//  }
 
 #ifdef DEBUG_MODEM
     // Show modem ISR stats from the previous transmission

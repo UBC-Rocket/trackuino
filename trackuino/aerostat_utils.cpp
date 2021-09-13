@@ -3,6 +3,7 @@
 */
 
 #include "aerostat_utils.h"
+#include "config.h"
 #include <string.h>
 #include <Arduino.h>
 
@@ -148,4 +149,22 @@ void compressWind(int windSpeed, char compressedChars[2])
     int base91 = (int)round((log(windSpeed + 1)/log(1.08))); //1.08 logarithm of (wind speed + 1)
     compressedChars[0] = intToBase91(base91 % 91);
     compressedChars[1] = '\0';
+}
+
+
+/*
+* Testing mode does the following:
+* 1) Disables buzzer entirely
+* 2) Changes APRS comment from compressed data to an apology message
+* 3) Transmit every 20 seconds rather than every 60.
+*/
+void setup_testing_mode()
+{
+    pinMode(TESTING_MODE_PIN, INPUT);
+}
+
+
+bool check_testing_mode()
+{
+    return digitalRead(TESTING_MODE_PIN);
 }

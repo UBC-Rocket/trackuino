@@ -16,6 +16,7 @@ float measureRevpWind()
   // wind formula derived from a wind tunnel data, annemometer and some fancy Excel regressions
   // this scalin doesn't have any temperature correction in it yet
   float windMPH =  pow((((float)windADunits - 264.0) / 85.6814), 3.36814);
+  //Serial.println(windMPH*1.60934);
   return windMPH * 1.60934; //that's KPH
     
 }

@@ -90,7 +90,7 @@
 // 00:02:00, etc. and the second balloon will transmit at 00:00:30, 00:01:30,
 // 00:02:30, etc.
 #define APRS_SLOT     -1     // seconds. -1 disables slotted transmissions
-#define APRS_PERIOD   60000    // milliseconds
+#define APRS_PERIOD 10000    // milliseconds
 
 // GPS baud rate (in bits per second). This is also the baud rate at which
 // debug data will be printed out the serial port.
@@ -180,19 +180,19 @@
 // it must be between L and 65535, where L = F_CPU / 65535 and F_CPU is the
 // clock rate in hertzs. For 16 MHz Arduinos, this gives a lower limit of 
 // 245 Hz.
-// #define BUZZER_FREQ             895     // Hz
+#define BUZZER_FREQ             4000     // Hz
 
 // These are the number of seconds the buzzer will stay on/off alternately
-// #define BUZZER_ON_TIME          1       // secs
-// #define BUZZER_OFF_TIME         2       // secs
+#define BUZZER_ON_TIME          1000       // millisecs
+#define BUZZER_OFF_TIME         3000       // millisecs
 
 // This option disables the buzzer above BUZZER_ALTITUDE meters. This is a
 // float value, so make it really high (eg. 1000000.0 = 1 million meters)
 // if you want it to never stop buzzing.
-// #define BUZZER_ALTITUDE         3000.0  // meters (1 ft = 0.3048 m)
+#define BUZZER_ALTITUDE         500.0  // meters (1 ft = 0.3048 m)
 
 // The options here are pin 9 or 10
-// #define BUZZER_PIN              9
+#define BUZZER_PIN              45
 
 
 
@@ -207,6 +207,8 @@
 
 #define SENS_MEASUREMENTS_PER_PERIOD 4
 #define GPS_MEASUREMENTS_PER_PERIOD 4
+
+#define TESTING_MODE_PIN 23
 
 
 // --------------------------------------------------------------------------

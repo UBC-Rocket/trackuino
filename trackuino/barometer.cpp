@@ -11,7 +11,7 @@ void setupBarometer()
 double measurePressure()
 {
   double reading = analogRead(BAROMETER_PIN);
-  double barometerVoltage = reading/1024.0 * BAROMETER_V_REFERENCE;
+  double barometerVoltage = (reading+1)/1024.0 * BAROMETER_V_REFERENCE;
   // AnalogRead returns value between 0 and 1024, which is a fraction of the V_SUPPLY
 
   double pressure = (barometerVoltage - BAROMETER_TRANS_FUN_MIN * BAROMETER_V_SUPPLY) * (BAROMETER_P_MAX - BAROMETER_P_MIN)/(0.8*BAROMETER_V_SUPPLY) + BAROMETER_P_MIN;

@@ -17,7 +17,7 @@ void setupSd()
       if(logFile.position() == 0)  // if the file is totally blank
       {
         Serial.println("File opened successfully.");
-        logFile.println(F("Time,Latitude,Longitude,GPS Alt,Sens Alt,Sens Temp, Windspeed"));
+        logFile.println(F("Time,Latitude,Longitude,GPS Alt,Sens Alt,Pressure, Sens Temp, Windspeed"));
       }
     }
     logFile.println("Arduino restarted");
@@ -77,7 +77,7 @@ void logData(char gpsString[], int altitudeValues[], int velocityValues[])
 * Logs GPS and sensor data once for every SENSOR measurement (so if measuring sensors more times than GPS, the GPS
 * position might not match that which will be transmitted).
 */
-void logDataNew(char gpsTime[7], double lat, double lon, int gpsAlt, double sensPressure, double sensTemp, int wind)
+void logDataNew(char gpsTime[7], double lat, double lon, int gpsAlt, double sensPressure, double sensTemp, double wind)
 {
     File logFile = SD.open("log.csv", FILE_WRITE);
     if (logFile)

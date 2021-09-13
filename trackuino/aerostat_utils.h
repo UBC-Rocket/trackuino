@@ -21,4 +21,8 @@ void compressLong(double longitude, char compressedChars[5]);
 void compressAlt(int altitude, char compressedChars[3]);
 void compressWind(int windSpeed, char compressedChars[3]);
 
+void setup_testing_mode();
+bool check_testing_mode();
+
+
 #endif aerostat_utils_h
