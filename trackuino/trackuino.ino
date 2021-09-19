@@ -58,6 +58,7 @@
 #include "barometer.h"
 #include "adaUlGps.h"
 #include "sdlogging.h"
+#include "buzzer.h"
 
 // Arduino/AVR libs
 #if (ARDUINO + 1) >= 100
@@ -74,7 +75,7 @@ static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 static unsigned long int aprs_timer = 0; // Defined around line 117
 static unsigned long int sens_measure_timer = 0;
 static unsigned long int gps_measure_timer = 0;
-//static unsigned long int buzzer_timer = 0; 
+static unsigned long int buzzer_timer = 0; 
 
 // Variables for storing multiple measurements per measurement period.
 double velocityValues[SENS_MEASUREMENTS_PER_PERIOD];
@@ -117,6 +118,7 @@ void setup()
   aprs_timer = millis();
   sens_measure_timer = millis(); 
   gps_measure_timer = millis();
+  buzzer_timer = millis();
   
   if (APRS_SLOT >= 0) {
 //    do {
@@ -185,13 +187,13 @@ void loop()
     while (afsk_flush()) {
       power_save();
     }
-//
-//  if ((millis() - buzzer_timer) >= (BUZZER_OFF_TIME+BUZZER_ON_TIME))
-//  {
-//      // If "on time" is 2 s and "off time" is 2 s, we want the buzzer to be enabled every 4 s.
-//      aerostat_buzzer_beep();
-//      buzzer_timer = millis();
-//  }
+
+  if ((millis() - buzzer_timer) >= (BUZZER_OFF_TIME+BUZZER_ON_TIME))
+  {
+      // If "on time" is 2 s and "off time" is 2 s, we want the buzzer to be enabled every 4 s.
+      aerostat_buzzer_beep();
+      buzzer_timer = millis();
+  }
 
 #ifdef DEBUG_MODEM
     // Show modem ISR stats from the previous transmission
