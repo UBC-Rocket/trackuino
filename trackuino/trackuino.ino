@@ -143,6 +143,7 @@ void loop()
    char gpsTimeString[7];
    adaUlRecievePosition(&latMeasurement, &longMeasurement, &altMeasurement, gpsTimeString);
 
+  
 
   // Time for another measurement
   if ((millis() - sens_measure_timer) >= (APRS_PERIOD/SENS_MEASUREMENTS_PER_PERIOD))

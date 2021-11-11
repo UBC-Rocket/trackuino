@@ -53,12 +53,12 @@
 
 // FOR TESTING PURPOSES IN URBAN AREAS ONLY, PUT WIDE1-1
 
-#define DIGI_PATH1      "WIDE1"
+#define DIGI_PATH1      "WIDE2"
 #define DIGI_PATH1_TTL  1
 
 // FOR TESTING PURPOSES IN URBAN AREAS ONLY, DEFINE A 2ND PATH, WIDE2-1
-#define DIGI_PATH2 "WIDE2"
-#define DIGI_PATH2_TTL 1
+//#define DIGI_PATH2 "WIDE2"
+//#define DIGI_PATH2_TTL 1
 
 // APRS comment: this goes in the comment portion of the APRS message. You
 // might want to keep this short. The longer the packet, the more vulnerable
@@ -90,7 +90,7 @@
 // 00:02:00, etc. and the second balloon will transmit at 00:00:30, 00:01:30,
 // 00:02:30, etc.
 #define APRS_SLOT     -1     // seconds. -1 disables slotted transmissions
-#define APRS_PERIOD 10000    // milliseconds
+#define APRS_PERIOD 60000    // milliseconds
 
 // GPS baud rate (in bits per second). This is also the baud rate at which
 // debug data will be printed out the serial port.
@@ -189,7 +189,7 @@
 // This option disables the buzzer above BUZZER_ALTITUDE meters. This is a
 // float value, so make it really high (eg. 1000000.0 = 1 million meters)
 // if you want it to never stop buzzing.
-#define BUZZER_ALTITUDE         500.0  // meters (1 ft = 0.3048 m)
+#define BUZZER_ALTITUDE         300.0  // meters (1 ft = 0.3048 m)
 
 // The options here are pin 9 or 10
 #define BUZZER_PIN              45
